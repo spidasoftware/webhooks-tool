@@ -1,0 +1,6 @@
+<div class="row">
+  <div class="small-12 columns"><a class="tiny right button" {{action 'new'}}>New</a></div>
+</div>
+{{#each sortedUsers as |user|}}
+  {{render-user user=user startWorking='startWorking' stopWorking='stopWorking'}}
+{{/each}}

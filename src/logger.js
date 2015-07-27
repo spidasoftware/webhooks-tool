@@ -1,0 +1,21 @@
+var bunyan = require('bunyan');
+var mkdirp = require('mkdirp');
+
+mkdirp.sync('./logs');
+
+var streams = [{
+    level: 'debug',
+    type: 'rotating-file',
+    period: '1d',
+    count: 10,
+    path: './logs/webhookServer.log'
+}];
+
+var loggerNames = ['web','config','main','db','hook'];
+
+var logger = {};
+loggerNames.forEach(function(name) {
+    logger[name] = bunyan.createLogger({name: name, streams: streams});
+});
+
+module.exports = logger;

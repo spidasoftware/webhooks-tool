@@ -1,0 +1,37 @@
+@import 'foundation';
+
+table {
+	width: 100%;
+
+	.button {
+		margin-bottom: 0;
+	}
+}
+
+.matches {
+	color: #11ff11;
+}
+
+.noMatch {
+	color: #ff1111;
+}
+
+.fileUpload {
+	position: relative;
+
+	input[type=file] {
+		opacity: 0;
+		z-index: 100;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height: 44px;
+		width: 100px;
+	}
+}
+
+.has-tip {
+	font-weight: normal;
+	border-bottom: 0;
+}
+

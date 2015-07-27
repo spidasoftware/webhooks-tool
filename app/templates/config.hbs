@@ -1,0 +1,43 @@
+{{#each configProperties as |property|}}
+  <div class="row collapse">
+    <div class="small-4 columns">
+      <span class="prefix">
+        <span data-tooltip aria-haspopup="true" class="has-tip" title={{property.description}}>
+          {{property.name}}
+        </span>
+      </span>
+    </div>
+    {{#if property.isBoolean}} 
+      <div class="small-6 columns">
+        <div class="switch radius">
+          {{input type='checkbox' checked=property.value elementId=property.key}}
+          <label for={{property.key}}></label>
+        </div>
+      </div>
+    {{else}}
+      <div class="small-7 columns">
+        {{input type='text' value=property.value}}
+      </div>
+    {{/if}}
+    <div class="small-1 columns">
+      {{#if property.requiresRestart}}
+        <span data-tooltip aria-haspopup="true" class="right has-tip" title="Requires restart">
+          <img src='restart.png'>          
+        </span>
+      {{/if}}
+    </div>
+  </div>
+{{/each}}
+
+<div class="row">
+  <div class="small-12">
+    <ul class="button-group right">
+      <li>
+        <a class="tiny button {{unless dirtyConfig 'disabled'}}" {{action 'save'}}>Save</a>
+      </li>
+      <li>
+        <a class="tiny button" {{action 'restart'}}>Restart</a>
+      </li>
+    </ul>
+  </div>
+</div>

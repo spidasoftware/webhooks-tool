@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="small-4 columns">
+    {{#if user.isNew}}
+      {{input type='text' value=user.name}}
+    {{else}}
+      {{user.name}}
+    {{/if}}
+  </div>
+  {{#if user.isNew}}
+    <div class="small-7 columns {{unless passwordValue 'error'}}">
+      {{input type='password' value=newPassword}}
+        {{#unless passwordValid}}
+          <span class='error'>Please enter a password greater than 8 characters long.</span>
+        {{/unless}}
+    </div>
+  {{else}}
+    {{#if isReseting}}
+      <div class="small-5 columns {{unless passwordValue 'error'}}">
+        {{input type='password' value=newPassword}}
+        {{#unless passwordValid}}
+          <span class='error'>Please enter a password greater than 8 characters long.</span>
+        {{/unless}}
+      </div>
+      <div class="small-2 columns">
+        <a class="tiny button {{if cantSave 'disabled'}}" disabled={{boolean-attr cantSave}} {{action 'reset'}}>Reset</a>
+      </div>
+    {{else}}
+      <div class="small-7 columns">
+        <a class="tiny button" {{action 'showReset'}}>Reset Password</a>
+      </div>
+    {{/if}}
+  {{/if}}
+  <div class="small-1 columns">
+    {{#if user.isNew}}
+      <a class="tiny button {{if cantSave 'disabled'}}" disabled={{boolean-attr cantSave}} {{action 'save'}}>Save</a>
+    {{else}}
+      <a class="tiny button" {{action 'delete'}}>Delete</a>
+    {{/if}}
+  </div>
+</div>

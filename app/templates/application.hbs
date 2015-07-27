@@ -1,0 +1,89 @@
+<nav class="top-bar" data-topbar role='navigation'>
+  <ul class="title-area">
+    <li class="name">
+      <h1><a {{transition-to '/'}}>SPIDAMin Webhooks Tool</a></h1>
+    </li>
+  </ul>
+  <section class="top-bar-section">
+    <ul class="right">
+      {{#if showWorking}}
+        <li>
+          <a><img src="spinner.gif"/> {{workingMessage}}</a>
+        </li>
+        <li class='divider'></li>
+      {{/if}}
+      {{#if isLoggedIn}}
+        <li class="{{if showingUsers 'active'}}">
+          {{#link-to 'users'}}Users{{/link-to}}
+        </li>
+        <li class="{{if showingWebhooks 'active'}}">
+          {{#link-to 'webhooks'}}Webhooks{{/link-to}}
+        </li>
+        <li class="{{if showingConfig 'active'}}">
+          {{#link-to 'config'}}Config{{/link-to}}
+        </li>
+        <li class="{{if showingAdmin 'active'}}">
+          {{#link-to 'admin'}}Admin{{/link-to}}
+        </li>
+        <li class='divider'></li>
+        <li>
+          <a {{action 'logout'}}>Log Out</a>
+        </li>
+      {{/if}}
+    </ul>
+  </section>
+</nav>
+
+<div class="row">
+  <div class="small-12 columns">&nbsp;</div>
+</div>
+
+{{#if isLoggedIn}}
+  {{outlet}}
+  {{#reveal-modal visible=willBeLoggedOut}}
+    <div class="row">
+      <div class="small-12 columns">Your session will expire {{live-moment live=true format='fromNow' value=model.login.expires type='plain'}}.</div>
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <ul class="right button-group">
+          <li><a class="small button" {{action 'logout'}}>Logout</a></li>
+          <li><a class="small button" {{action 'renewLogin'}}>Stay logged in</a></li>
+        </ul>
+      </div>
+    </div>
+  {{/reveal-modal}}
+{{else}}
+  <div class="row">
+    <div class="small-6 small-centered columns">
+      {{#if showInvalidPasswordMessage}}
+        <div class="row">
+          <div class="small-12 columns">Your username or password is invalid</div>
+        </div>
+      {{/if}}
+      <div class="row collapse prefix-round">
+        <div class="small-4 columns">
+          <span class="prefix">Username</span>
+        </div>
+        <div class="small-8 columns">
+          {{input type="text" value=username}}
+        </div>
+      </div>
+      <div class="row collapse prefix-round">
+        <div class="small-4 columns">
+          <span class="prefix">Password</span>
+        </div>
+        <div class="small-8 columns">
+          {{input type="password" value=password}}
+        </div>
+      </div>
+      <div class="row collapse prefix-round">
+        <div class="small-8 columns">
+        </div>
+        <div class="small-4 columns">
+          <a class="right button" {{action 'login'}}>Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/if}}

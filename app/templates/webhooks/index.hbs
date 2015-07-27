@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="small-12 columns">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Channel</th>
+          <th>Event Filter</th>
+          <th>Script</th>
+          <th><a class="tiny button right inline" {{action 'new'}}>New</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each model.webhooks as |webhook|}}
+          <tr>
+            <td>{{webhook.name}}</td>
+            <td>{{webhook.channel}}</td>
+            <td>{{webhook.eventFilter}}</td>
+            <td>{{webhook.script}}</td>
+            <td>
+              <ul class="button-group right">
+                <li><a class="tiny button" {{action 'edit' webhook}}>Edit/View</a></li>
+                <li><a class="tiny button" {{action 'delete' webhook}}>Delete</a></li>
+              </ul>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+

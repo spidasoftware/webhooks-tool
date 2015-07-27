@@ -1,0 +1,115 @@
+var Promise = require('bluebird');
+var spawn = require('child_process').spawn;
+
+var errorTranslations = {
+    "write EPIPE": "Could not write to script STDIN, most likely this means we could not execute the script"
+};
+
+var callbackHandler = {
+    init: function(config, db) {
+        this.config = config;
+        this.db = db;
+    },
+
+    executeChildProcess: function(options) {
+        return new Promise(function (resolve, reject) {
+            try {
+                var child = spawn(options.cmd, options.args);
+
+                var errorHandler = function(err) {
+                    if (errorTranslations[err.message]) {
+                        err.display=errorTranslations[err.message];
+                    } else {
+                        err.display=err.message;
+                    }
+
+                    reject(err);
+                };
+
+                child.on('error', errorHandler);
+                child.stdin.on('error', errorHandler);
+                child.stdout.on('error', errorHandler);
+
+                child.stdout.setEncoding('utf8');
+
+                //This could probably be done more efficiently by not using 'flowing' mode
+                var childOutput = '';
+                child.stdout.on('data', function(data) {
+                    childOutput += data;
+                });
+
+                child.on('exit', function(code) {
+                    resolve({
+                        exitCode: code,
+                        output: childOutput
+                    });
+                });
+
+                child.stdin.end(options.stdin);
+
+            } catch (e) {
+                reject(e);
+            }
+        });
+    },
+
+    executeScript: function(hook, data, log) {
+        var logData = this.config.logCallbackData ? JSON.parse(data) : { name: data.name, eventName: data.eventName };
+        log.debug({logData: logData}, 'Executing script');
+        this.db.addLogEntry(hook.log, 'Executing script', logData);
+
+        var self = this;
+        return this.executeChildProcess({
+            stdin: data,
+            cmd: hook.script,
+            args: [data.name, data.eventName]
+        }).then(function(result) {
+            if (!self.config.logScriptOut) {
+                result.output = 'NOT LOGGED';
+            }
+            log.debug({result: result}, 'Script complete');
+            self.db.addLogEntry(hook.log, 'Script complete', result);
+        });
+    },
+
+    handle: function(req, res) {
+        //Just respond right away since min ignores anything in the response
+        res.sendStatus(200);
+        var self=this;
+        this.db.getHookByHookId(req.body.hookId).then(function(hook) {
+            if (hook) {
+                req.log.debug({hook: hook}, 'Found matching hook');
+                self.db.addLogEntry(hook.log, 'Callback recieved', { 
+                    event: req.body.eventName,
+                    enabled: hook.enabled,
+                    script: hook.script
+                });
+
+                if (!hook.enabled) {
+                    req.log.info('Hook is not enabled, not executing script')
+                } else if (!hook.script) {
+                    req.log.info('Hook does not have an associated script, not executing');
+                } else {
+                    var callbackData = req.body
+                    callbackData.name = hook.name;
+                    callbackData.eventFilter = hook.eventFilter;
+                    if (self.config.passServerInfo) {
+                        callbackData.apiToken = self.config.apiToken;
+                        callbackData.minServer = self.config.minBaseUrl;
+                    }
+
+                    self.executeScript(hook, JSON.stringify(callbackData), req.log);
+                }
+            } else {
+                req.log.warn('Recieved callback for hook ' + req.body.hookId + ', but I do not know about that hook');
+            }
+        });
+    }
+};
+
+['handle'].forEach(function(method) {
+    callbackHandler[method]=callbackHandler[method].bind(callbackHandler);
+});
+
+module.exports = callbackHandler;
+

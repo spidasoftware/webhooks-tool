@@ -1,0 +1,64 @@
+import Ember from 'ember';
+import Restart from 'webhook-server/mixins/restart';
+
+export default Ember.Controller.extend(Restart,{
+    actions: {
+        import: function(type) {
+            this.set('selectingFile',true);
+            this.set('fileType',type);
+        },
+        fileSelected: function(file) {
+            var self = this;
+            var type = this.get('fileType');
+
+            this.set('uploading',true);
+            this.set('uploadFailed',false);
+            this.set('selectingFile',false);
+
+            var formData = new FormData();
+            formData.append('import',file);
+
+            this.send('startWorking','Importing ' + type + ' from ' + file.name + '...');
+            Ember.$.ajax('/api/method/import/' + type, {
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json'
+            }).then(function(result) {
+                if (result.success) {
+                    //Clear out the local store
+                    if (type === 'everything') {
+                        self.store.unloadAll();
+                    } else if (type !== 'config') {
+                        self.store.unloadAll(type);
+                    }
+                } else {
+                    self.set('uploadFailed',true);
+                    self.set('errorMessage',result.message);
+                }
+                self.send('stopWorking');
+            }, function() {
+                self.send('stopWorking');
+                self.set('uploadFailed', true);
+                self.set('errorMessage', 'Unable to upload file');
+            });
+        },
+        restart: function() {
+            var self=this;
+
+            this.send('startWorking','Restarting...');
+            this.restart().then(function() {
+                self.send('stopWorking');
+            });
+        },
+
+        resync: function() {
+            this.send('startWorking','Syncing...');
+            var self = this;
+            Ember.$.ajax('/api/method/resync').then(function() {
+                self.send('stopWorking');
+            });
+        }
+    }
+});
