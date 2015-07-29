@@ -123,6 +123,10 @@ export default Ember.Component.extend(ArrayPager,{
                 });
             }
         },
+        cancel: function() {
+            this.get('webhook').rollback();
+            this.sendAction('cancel');
+        },
         toggleLogs: function() {
             this.toggleProperty('showingLogs');
         }

@@ -1,7 +1,7 @@
 var Router = require('express').Router;
 var hash = require('../login').hash;
 
-var LOGIN_TIME = 30 * 60 * 1000;
+var LOGIN_TIME = 30 * 60 * 1000; //30 Minutes
 
 var validLoginToken = function(req) {
     var loginToken = req.signedCookies.LOGIN_TOKEN;
@@ -60,9 +60,13 @@ module.exports = function(config, db, log) {
     });
 
     router.get('/isLoggedIn', function(req, resp) {
-        resp.send({
-            login: validLoginToken(req)
-        });
+        var token = validLoginToken(req);
+
+        if (token) {
+            resp.send({ login: token });
+        } else {
+            resp.send({ login: { isLoggedIn: false }});
+        }
     });
 
     router.get('/renewLogin', function(req, resp) {

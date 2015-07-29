@@ -10,7 +10,7 @@ var onNewDB = function(config, db) {
 
     config.isNew=false;
 
-    return db.insert('users', {name: 'admin', password: hash('1234')})
+    return db.insert('users', {name: 'admin', password: hash('changemeplease')})
     .then(config.write)
     .then(function() { return db; });
 };

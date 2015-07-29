@@ -157,7 +157,10 @@
   <div class="small-6 columns">
     <ul class="button-group right">
       <li>
-        <a class="small button" {{action 'save'}}>Save</a>
+        <a class="small button {{unless webhook.isDirty 'disabled'}}" {{action 'save'}}>Save</a>
+      </li>
+      <li>
+        <a class="small button {{unless webhook.isDirty 'disabled'}}" {{action 'cancel'}}>Cancel</a>
       </li>
     </ul>
   </div>

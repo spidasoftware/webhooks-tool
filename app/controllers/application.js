@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-var LOGOUT_GRACE = 30 * 60 * 1000;
+var LOGOUT_GRACE = 5 * 60 * 1000; //5 Minutes
 
 export default Ember.Controller.extend({
     //Note: the isLoggedIn property is for determining what to show the user,

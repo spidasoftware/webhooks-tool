@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each model.webhooks as |webhook|}}
+        {{#each sortedWebhooks as |webhook|}}
           <tr>
             <td>{{webhook.name}}</td>
             <td>{{webhook.channel}}</td>
@@ -21,6 +21,9 @@
               <ul class="button-group right">
                 <li><a class="tiny button" {{action 'edit' webhook}}>Edit/View</a></li>
                 <li><a class="tiny button" {{action 'delete' webhook}}>Delete</a></li>
+                {{#if webhook.isDirty}}
+                  <li><a class="tiny button" {{action 'save' webhook}}>Save</a></li>
+                {{/if}}
               </ul>
             </td>
           </tr>
