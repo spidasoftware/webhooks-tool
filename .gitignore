@@ -20,4 +20,4 @@ testem.log
 /data
 /log
 /package
-webhookTool*.tar.gz
+webhooksTool*.tar.gz
