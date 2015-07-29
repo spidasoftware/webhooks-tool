@@ -31,10 +31,10 @@ module.exports = function(grunt) {
                 cmd: nodeBin + '/ember build -prod'
             },
             log: {
-                cmd: 'tail -f ' + __dirname + '/logs/webhookServer.log | ' + nodeBin + '/bunyan --color'
+                cmd: 'tail -f ' + __dirname + '/logs/webhooksTool.log | ' + nodeBin + '/bunyan --color'
             },
             packageInstall: {
-                cwd: 'package/webhook-tool',
+                cwd: 'package/webhooks-tool',
                 cmd: 'npm install --production'
             }
         },
@@ -42,9 +42,9 @@ module.exports = function(grunt) {
         copy: {
             package: {
                 files: [
-                    { expand: true, src: ['index.js', 'package.json', 'README.md', 'start.sh'], dest: 'package/webhook-tool' },
-                    { expand: true, src: ['src/**'], dest: 'package/webhook-tool' },
-                    { expand: true, src: ['dist/**'], dest: 'package/webhook-tool'}
+                    { expand: true, src: ['index.js', 'package.json', 'README.md', 'start.sh'], dest: 'package/webhooks-tool' },
+                    { expand: true, src: ['src/**'], dest: 'package/webhooks-tool' },
+                    { expand: true, src: ['dist/**'], dest: 'package/webhooks-tool'}
                 ]
             }
         },
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
         compress: {
             package: {
                 options: {
-                    archive: 'webhookTool.<%= pkg.version %>.tar.gz'
+                    archive: 'webhooksTool.<%= pkg.version %>.tar.gz'
                 },
                 files: [
                     { expand: true, cwd: 'package', src: ['**'], dest: '.' }
@@ -60,7 +60,7 @@ module.exports = function(grunt) {
             },
             packageNoLibs: {
                 options: {
-                    archive: 'webhookTool.<%= pkg.version %>.no-libs.tar.gz'
+                    archive: 'webhooksTool.<%= pkg.version %>.no-libs.tar.gz'
                 },
                 files: [
                     { expand: true, cwd: 'package', src: ['**'], dest: '.' }
@@ -96,6 +96,6 @@ module.exports = function(grunt) {
     grunt.registerTask('packageNoLibs', 'Create a minimal package (no external libs)', ['buildProd', 'copy:package', 'chmod', 'compress:packageNoLibs', 'remove:packageClean']);
 
     grunt.registerTask('chmod', 'Set permissions on start.sh', function() {
-        fs.chmodSync('./package/webhook-tool/start.sh','755');
+        fs.chmodSync('./package/webhooks-tool/start.sh','755');
     });
 };

@@ -19,4 +19,5 @@ testem.log
 #Webhook Server Specific
 /data
 /log
+/package
 webhookTool*.tar.gz

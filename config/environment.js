@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'webhook-server',
+    modulePrefix: 'webhooks-tool',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',

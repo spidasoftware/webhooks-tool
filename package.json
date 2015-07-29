@@ -1,5 +1,5 @@
 {
-  "name": "webhook-server",
+  "name": "webhooks-tool",
   "version": "1.0.0",
   "description": "A small server that executes scripts in response to SPIDAMin Events",
   "private": true,
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "grunt start",
     "build": "grunt",
-    "test": "ember test"
+    "test": "grunt test"
   },
   "repository": "",
   "engines": {

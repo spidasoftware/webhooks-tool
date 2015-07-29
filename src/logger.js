@@ -8,7 +8,7 @@ var streams = [{
     type: 'rotating-file',
     period: '1d',
     count: 10,
-    path: './logs/webhookServer.log'
+    path: './logs/webhooksTool.log'
 }];
 
 var loggerNames = ['web','config','main','db','hook'];

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Restart from 'webhook-server/mixins/restart';
+import Restart from 'webhooks-tool/mixins/restart';
 
 export default Ember.Controller.extend(Restart,{
     actions: {

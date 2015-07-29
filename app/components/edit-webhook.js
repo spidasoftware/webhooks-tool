@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import ArrayPager from 'webhook-server/mixins/array-pager';
+import ArrayPager from 'webhooks-tool/mixins/array-pager';
 
 export default Ember.Component.extend(ArrayPager,{
     channels: ['Project','Status','Form','File','Tag','Action'],

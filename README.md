@@ -1,11 +1,24 @@
-# Webhook-server
+# Webhooks-tool
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAMin events.  
 
-## Prerequisites
+## Installation
 
-You will need the following things properly installed on your computer.
+### Prerequisites
+
+The following prerequisites are needed to run the Webhooks Tool.  
+
+* [Node.js](http://nodejs.org/)
+
+### Deployment
+
+* Download the 
+
+## Development
+
+### Prerequisites
+
+The following prerequisites are required only for development of the Webhooks Tool.
 
 * [Git](http://git-scm.com/)
 * [Node.js](http://nodejs.org/) (with NPM)
@@ -13,17 +26,17 @@ You will need the following things properly installed on your computer.
 * [Ember CLI](http://www.ember-cli.com/)
 * [PhantomJS](http://phantomjs.org/)
 
-## Installation
+### Installation
 
 * `git clone <repository-url>` this repository
 * change into the new directory
 * `npm install`
 * `bower install`
 
-## Running / Development
+### Running / Development
 
-* `ember server`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+* `grunt`
+* Visit your app at [http://localhost:8080](http://localhost:8080).
 
 ### Code Generators
 
@@ -31,19 +44,16 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Running Tests
 
-* `ember test`
-* `ember test --server`
+* `grunt test`
+* `ember test --server` -- For interactive ember-only tests
 
 ### Building
 
-* `ember build` (development)
-* `ember build --environment production` (production)
+* `grunt` (development) -- Will build and run the application in development mode
+* `grunt package` (production) -- Will create a production 
+* `grunt packageNoLibs` -- Will create a production packge which requires running `npm install` to run
 
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
+### Further Reading / Useful Links
 
 * [ember.js](http://emberjs.com/)
 * [ember-cli](http://www.ember-cli.com/)
