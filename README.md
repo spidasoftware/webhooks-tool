@@ -1,6 +1,6 @@
-# Webhooks-tool
+# Webhooks Tool
 
-The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAMin events.  This application will connect to a running SPIDAMin application using the SPIDA Webhook API.  It will maintain a set of active webhooks, and trigger scripts whenever a webhook callback from SPIDAMin is received.
+The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAMin events.  This application will connect to a running SPIDAMin application using the Webhook API.  It will maintain a set of active webhooks, and trigger scripts whenever a webhook callback is received.
 
 See the [SPIDAMin WebhookAPI Documentation](https://github.com/spidasoftware/schema/blob/master/doc/apis/webhookAPI.md) for more information on using webhooks with SPIDAMin.
 
@@ -20,7 +20,7 @@ The following prerequisites are needed to run the Webhooks Tool.
 
 ## Setup
 
-The webhooks tool server will initially start over HTTP on port 8080.  An initial user is setup with username: admin and password: changemeplease.  To begin setting up the application, navigate to http://<servername>:8080 with your browser and log in using the default admin credentials.
+The webhooks tool server will initially start over HTTP on port 8080.  An initial user is setup with username: admin and password: changemeplease.  To begin setting up the application, navigate to http://servername:8080 with your browser and log in using the default admin credentials.
 
 ### Change default admin password
 
