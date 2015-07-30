@@ -30,7 +30,9 @@ export default Ember.Component.extend({
         var self=this;
         if (this.get('live')) {
             this.set('liveInterval', setInterval(function() {
-                self.notifyPropertyChange('momentObject');
+                Ember.run(function() {
+                    self.notifyPropertyChange('momentObject');
+                });
             }, 15000));
         }
     },

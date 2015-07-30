@@ -7,27 +7,27 @@
   <section class="top-bar-section">
     <ul class="right">
       {{#if showWorking}}
-        <li>
+        <li id="workingMessage">
           <a><img src="spinner.gif"/> {{workingMessage}}</a>
         </li>
         <li class='divider'></li>
       {{/if}}
       {{#if isLoggedIn}}
-        <li class="{{if showingUsers 'active'}}">
+        <li id='usersLink' class="{{if showingUsers 'active'}}">
           {{#link-to 'users'}}Users{{/link-to}}
         </li>
-        <li class="{{if showingWebhooks 'active'}}">
+        <li id='webhooksLink' class="{{if showingWebhooks 'active'}}">
           {{#link-to 'webhooks'}}Webhooks{{/link-to}}
         </li>
-        <li class="{{if showingConfig 'active'}}">
+        <li id ='configLink' class="{{if showingConfig 'active'}}">
           {{#link-to 'config'}}Config{{/link-to}}
         </li>
-        <li class="{{if showingAdmin 'active'}}">
+        <li id='adminLink' class="{{if showingAdmin 'active'}}">
           {{#link-to 'admin'}}Admin{{/link-to}}
         </li>
         <li class='divider'></li>
         <li>
-          <a {{action 'logout'}}>Log Out</a>
+          <a id='logout' {{action 'logout'}}>Log Out</a>
         </li>
       {{/if}}
     </ul>
@@ -58,7 +58,7 @@
     <div class="small-6 small-centered columns">
       {{#if showInvalidPasswordMessage}}
         <div class="row">
-          <div class="small-12 columns">Your username or password is invalid</div>
+          <div class="small-12 columns" id="passwordInvalid">Your username or password is invalid</div>
         </div>
       {{/if}}
       <div class="row collapse prefix-round">
@@ -66,7 +66,7 @@
           <span class="prefix">Username</span>
         </div>
         <div class="small-8 columns">
-          {{input type="text" value=username}}
+          {{input elementId="username" type="text" value=username}}
         </div>
       </div>
       <div class="row collapse prefix-round">
@@ -74,14 +74,14 @@
           <span class="prefix">Password</span>
         </div>
         <div class="small-8 columns">
-          {{input type="password" value=password}}
+          {{input elementId="password" type="password" value=password}}
         </div>
       </div>
       <div class="row collapse prefix-round">
         <div class="small-8 columns">
         </div>
         <div class="small-4 columns">
-          <a class="right button" {{action 'login'}}>Login</a>
+          <a id="login" class="right button" {{action 'login'}}>Login</a>
         </div>
       </div>
     </div>

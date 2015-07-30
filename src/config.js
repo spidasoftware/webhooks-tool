@@ -58,7 +58,7 @@ module.exports = function(dataPath) {
         try {
             mkdirp.sync(dataPath);
         } catch (makePathException) {
-            log.error(makePathExceprtion, 'Could not create ' + dataPath + '. Bailing...');
+            log.error(makePathException, 'Could not create ' + dataPath + '. Bailing...');
         }
         config = initialConfig;
         write.apply(config);

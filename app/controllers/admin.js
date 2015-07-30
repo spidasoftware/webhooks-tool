@@ -26,22 +26,26 @@ export default Ember.Controller.extend(Restart,{
                 contentType: false,
                 dataType: 'json'
             }).then(function(result) {
-                if (result.success) {
-                    //Clear out the local store
-                    if (type === 'everything') {
-                        self.store.unloadAll();
-                    } else if (type !== 'config') {
-                        self.store.unloadAll(type);
+                Ember.run(function() {
+                    if (result.success) {
+                        //Clear out the local store
+                        if (type === 'everything') {
+                            self.store.unloadAll();
+                        } else if (type !== 'config') {
+                            self.store.unloadAll(type);
+                        }
+                    } else {
+                        self.set('uploadFailed',true);
+                        self.set('errorMessage',result.message);
                     }
-                } else {
-                    self.set('uploadFailed',true);
-                    self.set('errorMessage',result.message);
-                }
-                self.send('stopWorking');
+                    self.send('stopWorking');
+                });
             }, function() {
-                self.send('stopWorking');
-                self.set('uploadFailed', true);
-                self.set('errorMessage', 'Unable to upload file');
+                Ember.run(function() {
+                    self.send('stopWorking');
+                    self.set('uploadFailed', true);
+                    self.set('errorMessage', 'Unable to upload file');
+                });
             });
         },
         restart: function() {
@@ -57,7 +61,9 @@ export default Ember.Controller.extend(Restart,{
             this.send('startWorking','Syncing...');
             var self = this;
             Ember.$.ajax('/api/method/resync').then(function() {
-                self.send('stopWorking');
+                Ember.run(function() {
+                    self.send('stopWorking');
+                });
             });
         }
     }

@@ -43,9 +43,11 @@ export default Ember.Component.extend({
                 }),
                 processData: false
             }).then(function() {
-                self.set('isReseting',false);
-                self.set('newPassword','');
-                self.sendAction('stopWorking');
+                Ember.run(function() {
+                    self.set('isReseting',false);
+                    self.set('newPassword','');
+                    self.sendAction('stopWorking');
+                });
             },function() {
             });
         },

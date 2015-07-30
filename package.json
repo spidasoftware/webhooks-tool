@@ -1,18 +1,22 @@
 {
-  "name": "webhooks-tool",
+  "name": "spida-webhooks-tool",
   "version": "1.0.0",
-  "description": "A small server that executes scripts in response to SPIDAMin Events",
   "private": true,
+  "description": "A small server that executes scripts in response to SPIDAMin Events",
+  "keywords": ['SPIDAMin', 'Webhooks', 'SPIDA', 'Min'],
+  "bugs": {
+      "url": "https://github.com/spidasoftware/webhooks-tool/issues"
+  },
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
   "scripts": {
     "start": "grunt start",
-    "build": "grunt",
+    "build": "grunt package",
     "test": "grunt test"
   },
-  "repository": "",
+  "repository": "https://github.com/spidasoftware/webhooks-tool",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -22,7 +26,7 @@
     "broccoli-asset-rev": "^2.0.2",
     "broccoli-merge-trees": "^0.2.1",
     "broccoli-static-compiler": "^0.2.1",
-    "ember-cli": "0.2.7",
+    "ember-cli": "1.13.1",
     "ember-cli-app-version": "0.3.3",
     "ember-cli-babel": "^5.0.0",
     "ember-cli-content-security-policy": "0.4.0",
@@ -37,12 +41,13 @@
     "ember-disable-proxy-controllers": "^1.0.0",
     "ember-export-application-global": "^1.0.2",
     "emberx-select": "1.1.4",
+    "glob": "^4.5.3",
     "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-compress": "^0.13.0",
     "grunt-contrib-copy": "^0.8.0",
     "grunt-exec": "^0.4.6",
     "grunt-parallel": "^0.4.1",
-    "grunt-remove": "^0.1.0",
     "grunt-supervisor": "^0.2.4"
   },
   "dependencies": {
@@ -60,6 +65,7 @@
     "request": "^2.58.0",
     "server-destroy": "^1.0.1",
     "supervisor": "^0.7.1",
-    "tar-fs": "^1.7.0"
+    "tar-fs": "^1.7.0",
+    "yargs": "^3.15.0"
   }
 }

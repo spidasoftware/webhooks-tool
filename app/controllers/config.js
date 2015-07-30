@@ -162,13 +162,17 @@ export default Ember.Controller.extend(Restart,{
                     'Content-Type': 'application/json'
                 }
             }).then(function() {
-                self.get('configProperties').forEach(function(property) {
-                    property.set('isDirty', false);
+                Ember.run(function() {
+                    self.get('configProperties').forEach(function(property) {
+                        property.set('isDirty', false);
+                    });
+                    self.send('stopWorking');
                 });
-                self.send('stopWorking');
             },function() {
-                //Handle Error Here
-                self.send('stopWorking');
+                Ember.run(function() {
+                    //Handle Error Here
+                    self.send('stopWorking');
+                });
             });
         },
 

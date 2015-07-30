@@ -86,14 +86,16 @@ export default Ember.Component.extend(ArrayPager,{
                 dataType: 'json',
                 method: 'POST'
             }).then(function(body) {
-                self.set('scriptRunning',false);
-                if (body.scriptRan) {
-                    self.set('scriptExitCode',body.exitCode);
-                    self.set('scriptOutput', body.output);
-                } else {
-                    self.set('scriptError', true);
-                    self.set('scriptErrorMessage',body.message || 'An error occured trying to execute the script');
-                }
+                Ember.run(function() {
+                    self.set('scriptRunning',false);
+                    if (body.scriptRan) {
+                        self.set('scriptExitCode',body.exitCode);
+                        self.set('scriptOutput', body.output);
+                    } else {
+                        self.set('scriptError', true);
+                        self.set('scriptErrorMessage',body.message || 'An error occured trying to execute the script');
+                    }
+                });
             });
         },
 

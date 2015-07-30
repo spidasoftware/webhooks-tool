@@ -1,0 +1,28 @@
+{
+  "framework": "qunit",
+  "test_page": "tests/index.html?hidepassed",
+  "disable_watching": true,
+  "launch_in_ci": [
+    "PhantomJS"
+  ],
+  "launch_in_dev": [
+    "Chrome"
+  ],
+  "proxies": {
+    "/api": {
+      "target": "http://localhost:8080"
+    },
+    "/login": {
+      "target": "http://localhost:8080"
+    },
+    "/logout": {
+      "target": "http://localhost:8080"
+    },
+    "/renewLogin": {
+      "target": "http://localhost:8080"
+    },
+    "/isLoggedIn": {
+      "target": "http://localhost:8080"
+    }
+  }
+}

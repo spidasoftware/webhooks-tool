@@ -41,10 +41,14 @@ export default Ember.Controller.extend({
         var self=this;
         if (expires) {
             this.set('loginTimeout',setTimeout(function() {
-                self.set('willBeLoggedOut', true);
-                self.set('logoutGraceTimeout', setTimeout(function() {
-                    self.send('logout');
-                },LOGOUT_GRACE));
+                Ember.run(function() {
+                    self.set('willBeLoggedOut', true);
+                    self.set('logoutGraceTimeout', setTimeout(function() {
+                        Ember.run(function() {
+                            self.send('logout');
+                        });
+                    },LOGOUT_GRACE));
+                });
             },expires - (Date.now() + LOGOUT_GRACE)));
         }
     }.observes('model.login.expires').on('init'),
@@ -64,23 +68,27 @@ export default Ember.Controller.extend({
                 processData: false,
                 dataType: 'json'
             }).then(function(data) {
-                //Request went through (but we may not be logged in)
-                if (data.success) {
-                    self.set('model.login',Ember.Object.create(data.login));
-                    //Refresh the route to reload stuff from api (it is not
-                    //available if we are not logged in)
-                    self.send('refresh');
-                    
-                    //Clear username and password fields
-                    self.set('username','');
-                    self.set('password','');
-                } else {
-                    self.set('isLoggedIn',false);
-                    self.set('showInvalidPasswordMessage',true);
-                }
+                Ember.run(function() {
+                    //Request went through (but we may not be logged in)
+                    if (data.success) {
+                        self.set('model.login',Ember.Object.create(data.login));
+                        //Refresh the route to reload stuff from api (it is not
+                        //available if we are not logged in)
+                        self.send('refresh');
+                        
+                        //Clear username and password fields
+                        self.set('username','');
+                        self.set('password','');
+                    } else {
+                        self.set('isLoggedIn',false);
+                        self.set('showInvalidPasswordMessage',true);
+                    }
+                });
             }, function() {
-                //Request failed.
-                self.set('showInvalidPasswordMessage',true);
+                Ember.run(function() {
+                    //Request failed.
+                    self.set('showInvalidPasswordMessage',true);
+                });
             });
         },
 
@@ -97,17 +105,21 @@ export default Ember.Controller.extend({
 
             var self = this;
             Ember.$.ajax('/renewLogin', {dataType: 'json'}).then(function(response) {
-                if (response.success) {
-                    self.set('model.login',Ember.Object.create(response.login));
-                    self.send('stopWorking');
-                    self.set('willBeLoggedOut', false);
-                } else {
+                Ember.run(function() {
+                    if (response.success) {
+                        self.set('model.login',Ember.Object.create(response.login));
+                        self.send('stopWorking');
+                        self.set('willBeLoggedOut', false);
+                    } else {
+                        self.send('logout');
+                        self.send('stopWorking');
+                    }
+                });
+            },function() {
+                Ember.run(function() { 
                     self.send('logout');
                     self.send('stopWorking');
-                }
-            },function() {
-                self.send('logout');
-                self.send('stopWorking');
+                });
             });
 
         },

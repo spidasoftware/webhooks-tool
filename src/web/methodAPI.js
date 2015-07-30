@@ -102,8 +102,8 @@ module.exports = function(config, db, stopServer) {
         var userId = req.body.userId;
         var password = req.body.password;
 
-        db.findById('users', userId).then(function(user) {
-            if (user.password && user.password.length >=8) {
+        if (password && password.length >=8) {
+            db.findById('users', userId).then(function(user) {
                 if (user) {
                     user.password = hash(password);
                     db.update('users', userId, user).then(function() {
@@ -112,10 +112,11 @@ module.exports = function(config, db, stopServer) {
                 } else {
                     res.sendStatus(404);
                 }
-            } else {
-                res.sendStatus(422);
-            }
-        });
+            });
+        } else {
+            res.sendStatus(422);
+        }
+
     });
 
     router.get('/resync', function(req, res) {
