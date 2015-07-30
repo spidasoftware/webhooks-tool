@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "A small server that executes scripts in response to SPIDAMin Events",
-  "keywords": ['SPIDAMin', 'Webhooks', 'SPIDA', 'Min'],
+  "keywords": ["SPIDAMin", "Webhooks", "SPIDA", "Min"],
   "bugs": {
       "url": "https://github.com/spidasoftware/webhooks-tool/issues"
   },
