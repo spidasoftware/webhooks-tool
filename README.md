@@ -143,16 +143,20 @@ The following prerequisites are required only for development of the Webhooks To
 
 Make use of the many generators for code, try `ember help generate` for more details
 
-### Running Tests
-
-* `grunt test`
-* `ember test --server` -- For interactive ember-only tests
-
 ### Building
 
 * `grunt` -- (development) Will build and run the application in development mode
 * `grunt package` -- (production) Will create a production webhooksTool.x.y.z.tar.gz package
-* `grunt packageNoLibs` -- Will create a production packge without external libraries.  This will require running `npm install` to install.
+* `grunt packageNoLibs` -- Will create a production packge without external libraries.  This will require running `npm install --production` to install.
+
+### Logs
+
+The webhook tool uses [bunyan](https://github.com/trentm/node-bunyan) as its logger.  Logs are stored as JSON in /logs.  The JSON logs can be piped though bunyan to convert them into a more human readable format.  Or run `grunt log` which will pipe the output of running tail -f on the logs into bunyan.
+
+### Tests
+
+* `grunt test` -- Single test of the application
+* `grunt testServe` -- Live testing of the application
 
 ### Further Reading / Useful Links
 
