@@ -12,7 +12,6 @@ var customHelpers = (function() {
         username = username || DEFAULT_USERNAME;
         password = password || DEFAULT_PASSWORD;
 
-
         andThen(function() {
             assert.equal(find('#username').length, 1, 'Username field exists');
             assert.equal(find('#password').length, 1, 'Password field exists');
@@ -34,6 +33,7 @@ var customHelpers = (function() {
         });
 
     });
+
 })();
 
 export default customHelpers;
