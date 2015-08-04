@@ -52,9 +52,7 @@ module.exports = function(grunt) {
         copy: {
             package: {
                 files: [
-                    { expand: true, src: ['index.js', 'package.json', 'README.md', 'start.sh'], dest: 'package/webhooks-tool' },
-                    { expand: true, src: ['src/**'], dest: 'package/webhooks-tool' },
-                    { expand: true, src: ['dist/**'], dest: 'package/webhooks-tool'}
+                    { expand: true, src: ['index.js', 'package.json', 'README.md', 'start.sh', 'install.sh', 'src/**', 'dist/**', 'install/**'], dest: 'package/webhooks-tool' },
                 ]
             },
             testData: {
@@ -163,8 +161,20 @@ module.exports = function(grunt) {
     grunt.registerTask('chmod', 'Set permissions on start.sh', function() {
         var done = this.async();
 
-        fs.chmod('./package/webhooks-tool/start.sh','755', function(err) {
-            done(!err)
+        fs.chmod('./package/webhooks-tool/start.sh','750', function(err) {
+            if (err) {
+                done(!err);
+            } else {
+                fs.chmod('./package/webhooks-tool/install.sh','750', function(err) {
+                    if (err) {
+                        done(!err);
+                    } else {
+                        fs.chmod('./package/webhooks-tool/index.js','750', function(err) {
+                            done(!err)
+                        });
+                    }
+                });
+            }
         });
     });
 
