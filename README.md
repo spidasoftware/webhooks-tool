@@ -10,13 +10,16 @@ See the [SPIDAMin WebhookAPI Documentation](https://github.com/spidasoftware/sch
 
 The following prerequisites are needed to run the Webhooks Tool.  
 
+* [Supervisor](http://supervisord.org)
 * [Node.js](http://nodejs.org/)
 
 ### Deployment
 
-* Download the webhooksTool.x.y.z.tar.gz package
-* Extract the package with `tar xfv webhooksTool.x.y.z.tar.gz`
-* Run `webhooks-tool/start.sh`
+* `sudo apt-get install --yes nodejs-legacy supervisor` (for Debian, Ubuntu, Mint, etc.)
+* `sudo yum install -y nodejs supervisor` (for RHEL, CentOS, Fedora)
+* `cd where-you-want-it-installed`
+* `sudo tar xfv webhooksTool.x.y.z.tar.gz`
+* `sudo webhooks-tool/install.sh`
 
 ## Setup
 
