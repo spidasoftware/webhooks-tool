@@ -4,14 +4,14 @@ var mkdirp = require('mkdirp');
 mkdirp.sync('./logs');
 
 var streams = [{
-    level: 'debug',
+    level: 'trace',
     type: 'rotating-file',
     period: '1d',
     count: 10,
     path: './logs/webhooksTool.log'
 }];
 
-var loggerNames = ['web','config','main','db','hook'];
+var loggerNames = ['web','config','main','db','hook','importExport'];
 
 var logger = {};
 loggerNames.forEach(function(name) {

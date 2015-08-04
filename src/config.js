@@ -9,9 +9,8 @@ var initialConfig = {
     dbVersion: 0,
     httpPort: 8080,
     product: 'projectmanager',
-    cookieSecret: 'NOMNOMNOM',
-    leaseTime: 600,
-    leaseLeadTime: 60,
+    leaseTime: 7 * 24 * 60 * 60, //One week
+    leaseLeadTime: 24 * 60 * 60, //One day
     logScriptOut: false,
     logCallbackData: false,
     passServerInfo: true
@@ -61,6 +60,8 @@ module.exports = function(dataPath) {
             log.error(makePathException, 'Could not create ' + dataPath + '. Bailing...');
         }
         config = initialConfig;
+        //This is random data with ~ 100-bits of entropy
+        config.cookieSecret = String(Math.floor(Math.random() * 10e15)) + String(Math.floor(Math.random() * 10e15));  
         write.apply(config);
     }
 

@@ -1,4 +1,5 @@
 var fs = require('fs');
+var http = require('http');
 
 module.exports = function(grunt) {
     var nodeBin = __dirname + '/node_modules/.bin';
@@ -39,13 +40,19 @@ module.exports = function(grunt) {
                 cmd: 'node ' + __dirname + '/index.js -p -d ' + __dirname + '/test-data'
             },
             startTestWatch: {
-                cmd: nodeBin + '/supervisor -w "index.js,src" --save-pid ' + __dirname + '/webhooks-tool.pid ' + __dirname + '/index.js'
+                cmd: nodeBin + '/supervisor -w "index.js,src" --save-pid ' + __dirname + '/webhooks-tool.pid -- ' + __dirname + '/index.js -d ' + __dirname + '/test-data'
             },
             emberTest: {
                 cmd: nodeBin + '/ember test'
             },
+            jasmineTests: {
+                cmd: nodeBin + '/jasmine-node ./backend-tests/*.spec.js'
+            },
             emberTestServe: {
                 cmd: nodeBin + '/ember test --serve'
+            },
+            mockMin: {
+                cmd: __dirname + '/tests/servers/mock-min'
             }
         },
 
@@ -96,14 +103,14 @@ module.exports = function(grunt) {
                     grunt: true,
                     stream: true,
                 },
-                tasks: ['testServer', 'runTests']
+                tasks: ['exec:mockMin', 'testServer', 'runTests']
             },
             testServe: {
                 options: {
                     grunt: true,
                     stream: true,
                 },
-                tasks: ['testServerWatch', 'runTestsServe']
+                tasks: ['exec:mockMin', 'testServerWatch', 'runTestsServe']
             },
             
         }
@@ -150,11 +157,14 @@ module.exports = function(grunt) {
     grunt.registerTask('runTests', 'Runs ember tests once sever has started and then kills server', [
         'waitForServerStart',
         'exec:emberTest',
+        'exec:jasmineTests',
+        'killMockMin',
         'killServer'
     ]);
     grunt.registerTask('runTestsServe', 'Runs ember test --serve once webhooks tool has start then kills webhooks Tool when done', [
         'waitForServerStart',
         'exec:emberTestServe',
+        'killMockMin',
         'killServer'
     ]);
 
@@ -200,5 +210,9 @@ module.exports = function(grunt) {
             process.kill(data,'SIGINT');
             done(!err);
         });
+    });
+
+    grunt.registerTask('killMockMin', 'Kills running mock min server', function() {
+        http.request('http://localhost:8081/~kill', this.async()).end();
     });
 };

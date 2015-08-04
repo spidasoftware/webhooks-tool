@@ -68,34 +68,41 @@ module.exports = function(config) {
 
         //REST Methods
         findById: function(model, id) {
+            log.trace({model: model, id: id}, 'Find by Id')
             return stores[model].findOneAsync({_id: id});
         },
         findByIds: function(model, ids) {
+            log.trace({model: model, ids: ids}, 'Find by Ids')
             return stores[model].findAsync({_id: { $in: ids }});
         },
         all: function(model) {
+            log.trace('Getting all ' + model);
             return stores[model].findAsync({});
         },
         update: function(model, id, o) {
+            log.trace({model: model, id: id, object: o}, 'Updating');
             return stores[model].updateAsync({_id: id}, o).then(function() {
                 o._id = id;
                 return o;
             });
         },
         insert: function(model, o) {
+            log.trace({model: model, object: o}, 'inserting');
             return stores[model].insertAsync(arrayWrap(o)).then(function(result) {
                 return result[0];
             });
         },
         insertMany: function(model, data) {
+            log.trace({model: model, data: data}, 'Inserting many');
             return stores[model].insertAsync(data);
         },
         delete: function(model, id) {
-            log.debug({model: model, id: id}, 'Deleting');
+            log.trace({model: model, id: id}, 'Deleting');
             return stores[model].removeAsync({_id: id});
         },
         clear: function(model) {
-            return stores[model].removeAsync({});
+            log.info('Clearing ' + model + ' from the DB');
+            return stores[model].removeAsync({},{multi: true});
         }
 
     };

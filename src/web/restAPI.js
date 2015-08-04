@@ -42,15 +42,20 @@ module.exports = function(config, db) {
             req.log.trace(o, 'Got result from db');
             var result = {};
 
-            if( Object.prototype.toString.call(o) === '[object Array]' ) {
-                result[model] = o.map(filter(model));
+            if (o) {
+                if( Object.prototype.toString.call(o) === '[object Array]' ) {
+                    result[model] = o.map(filter(model));
+                } else {
+                    result[singularMap[model]] = filter(model)(o);
+                }
+
+                req.log.trace(result, 'Sending to Ember');
+                
+                res.send(result);
             } else {
-                result[singularMap[model]] = filter(model)(o);
+                res.sendStatus(404);
             }
 
-            req.log.trace(result, 'Sending to Ember');
-            
-            res.send(result);
             return o;
         };
     };

@@ -5,6 +5,9 @@ import ArrayPager from 'webhooks-tool/mixins/array-pager';
 export default Ember.Component.extend(ArrayPager,{
     channels: ['Project','Status','Form','File','Tag','Action'],
     showingLogs: false,
+    sendServerInfo: false,
+    apiToken: '',
+    minServer: '',
 
     isTestingScript: false,
     scriptRunning: false,
@@ -41,15 +44,22 @@ export default Ember.Component.extend(ArrayPager,{
     }.property('scriptPayload'),
 
     scriptInput: function() {
-        return JSON.stringify({
+        var scriptInput = {
             name: this.get('webhook.name'),
             eventFilter: this.get('webhook.eventFilter'),
             hookId: this.get('webhook.hookId'),
             channel: this.get('webhook.channel'),
             eventName: this.get('testEventName'),
             payload: this.get('parsedPayload')
-        });
-    }.property('parsedPayload','testEventName','webhook.hookId','webhook.channel','webhook.name','webhook.eventFilter'),
+        };
+
+        if (this.get('sendServerInfo')) {
+            scriptInput.apiToken=this.get('apiToken');
+            scriptInput.minServer=this.get('minServer');
+        }
+
+        return JSON.stringify(scriptInput);
+    }.property('parsedPayload','testEventName','webhook.hookId','webhook.channel','webhook.name','webhook.eventFilter','sendServerInfo','apiToken','minServer'),
 
     //This is the logEntries in webhook.log.logEntries in reverse order
     contentToPage: function() {

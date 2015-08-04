@@ -56,30 +56,36 @@ var callbackHandler = {
     executeScript: function(hook, data, log) {
         var logData = this.config.logCallbackData ? JSON.parse(data) : { name: data.name, eventName: data.eventName };
         log.debug({logData: logData}, 'Executing script');
-        this.db.addLogEntry(hook.log, 'Executing script', logData);
-
         var self = this;
-        return this.executeChildProcess({
-            stdin: data,
-            cmd: hook.script,
-            args: [data.name, data.eventName]
-        }).then(function(result) {
-            if (!self.config.logScriptOut) {
-                result.output = 'NOT LOGGED';
-            }
-            log.debug({result: result}, 'Script complete');
-            self.db.addLogEntry(hook.log, 'Script complete', result);
-        });
+
+        return Promise.join(
+            this.db.addLogEntry(hook.log, 'Executing script', logData),
+            this.executeChildProcess({
+                stdin: data,
+                cmd: hook.script,
+                args: [data.name, data.eventName]
+            }).then(function(result) {
+                if (!self.config.logScriptOut) {
+                    result.output = 'NOT LOGGED';
+                }
+                log.debug({result: result}, 'Script complete');
+                return self.db.addLogEntry(hook.log, 'Script complete', result);
+            })
+        );
     },
 
     handle: function(req, res) {
-        //Just respond right away since min ignores anything in the response
-        res.sendStatus(200);
+        if (!req.query.wait) {
+            //Unless the wait query parameter is passed respond right away
+            //since min ignores anything in the response.
+            //The wait param is used for testing, since we don't know how long the script will take
+            res.sendStatus(200);
+        }
         var self=this;
         this.db.getHookByHookId(req.body.hookId).then(function(hook) {
             if (hook) {
                 req.log.debug({hook: hook}, 'Found matching hook');
-                self.db.addLogEntry(hook.log, 'Callback recieved', { 
+                var loggingPromise = self.db.addLogEntry(hook.log, 'Callback recieved', { 
                     event: req.body.eventName,
                     enabled: hook.enabled,
                     script: hook.script
@@ -98,7 +104,17 @@ var callbackHandler = {
                         callbackData.minServer = self.config.minBaseUrl;
                     }
 
-                    self.executeScript(hook, JSON.stringify(callbackData), req.log);
+                    Promise.join(
+                        self.executeScript(hook, JSON.stringify(callbackData), req.log),
+                        loggingPromise
+                    ).then(function() {
+                        if (req.query.wait) {
+                            //If the wait query parameter is passed respond
+                            //since we didn't send it earlier
+                            //It is used for testing, since we don't know how long the script will take
+                            res.sendStatus(200);
+                        }
+                    });
                 }
             } else {
                 req.log.warn('Recieved callback for hook ' + req.body.hookId + ', but I do not know about that hook');

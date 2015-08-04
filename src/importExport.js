@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 
+var log = require('./logger').importExport;
 var hookAPI = require('./hookAPI');
 
 var groups = {
@@ -39,6 +40,8 @@ module.exports = {
 
     importGroup: function(group, data) {
         var self = this;
+        log.debug('Importing Group: ' + group);
+        log.trace(data);
         return new Promise(function(resolve, reject) {
             var parsed;
             try {
@@ -77,7 +80,7 @@ module.exports = {
             return this.config.replace(data);
         } else {
             return this.db.clear(type).then(function() {
-                self.db.insertMany(type, data);
+                return self.db.insertMany(type, data);
             });
         }
     }
