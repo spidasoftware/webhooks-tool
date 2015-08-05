@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-if [[ -x /etc/supervisor/supervisord.conf ]]; then
+if [ -f /etc/supervisor/supervisord.conf ]; then
 	SUPERVISORD_CONF=/etc/supervisor/supervisord.conf
 else
 	SUPERVISORD_CONF=/etc/supervisord.conf
