@@ -6,7 +6,7 @@ var mkdirp = require('mkdirp');
 mkdirp.sync('./logs');
 
 var streams = [{
-    level: 'trace',
+    level: 'debug',
     type: 'rotating-file',
     period: '1d',
     count: 10,
