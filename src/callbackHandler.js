@@ -115,7 +115,7 @@ var callbackHandler = {
                 });
 
                 child.on('exit', function(code) {
-                    log.trace({code: code: childOutput: childOutput}, 'Child process exit');
+                    log.trace({code: code, childOutput: childOutput}, 'Child process exit');
                     resolve({
                         exitCode: code,
                         output: childOutput
