@@ -200,7 +200,7 @@ var hookAPI = {
         return this.config.minBaseUrl + '/' + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
     },
     getLocalURL: function() {
-        return this.config.externalServerUrl; + '/callback';
+        return this.config.externalServerUrl + '/callback';
     },
 
     //pendingRenewals contains a map of hookId -> the promise that is resolved
