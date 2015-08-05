@@ -1,5 +1,7 @@
 #!/bin/sh
 
 echo '{"testSTDIN":'
-cat /dev/stdin
+while read -r LINE; do
+	echo $LINE
+done
 echo '}'

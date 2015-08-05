@@ -74,7 +74,7 @@ var callbackHandler = {
                 stdin: data,
                 cmd: hook.script,
                 args: [data.name, data.eventName]
-            }).then(function(result) {
+            },log).then(function(result) {
                 if (!self.config.logScriptOut) {
                     result.output = 'NOT LOGGED';
                 }
@@ -85,12 +85,14 @@ var callbackHandler = {
     },
 
     //Forks a child process and returns a promise that resolves when it is complete
-    executeChildProcess: function(options) {
+    executeChildProcess: function(options, log) {
         return new Promise(function (resolve, reject) {
             try {
+                log.trace({options: options}, 'Spawning')
                 var child = spawn(options.cmd, options.args);
 
                 var errorHandler = function(err) {
+                    log.error(err, 'Error running script');
                     if (errorTranslations[err.message]) {
                         err.display=errorTranslations[err.message];
                     } else {
@@ -113,13 +115,14 @@ var callbackHandler = {
                 });
 
                 child.on('exit', function(code) {
+                    log.trace({code: code, childOutput: childOutput}, 'Process exiting')
                     resolve({
                         exitCode: code,
                         output: childOutput
                     });
                 });
 
-                child.stdin.end(options.stdin);
+                child.stdin.end(options.stdin + "\n");
 
             } catch (e) {
                 reject(e);

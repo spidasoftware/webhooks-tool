@@ -165,6 +165,7 @@ module.exports = function(grunt) {
         'killMockMin',
         'killServer'
     ]);
+    grunt.registerTask('stop', 'Stops running servers', ['killMockMin', 'killServer']);
 
     grunt.registerTask('test', 'Run tests', ['parallel:test']);
 
