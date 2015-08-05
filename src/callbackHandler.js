@@ -88,11 +88,11 @@ var callbackHandler = {
     executeChildProcess: function(options, log) {
         return new Promise(function (resolve, reject) {
             try {
-                log.trace({options: options}, 'Spawning')
+                log.trace({options: options},'Spawning child process');
                 var child = spawn(options.cmd, options.args);
 
                 var errorHandler = function(err) {
-                    log.error(err, 'Error running script');
+                    log.trace({err: err}, 'Error running child process');
                     if (errorTranslations[err.message]) {
                         err.display=errorTranslations[err.message];
                     } else {
@@ -115,7 +115,7 @@ var callbackHandler = {
                 });
 
                 child.on('exit', function(code) {
-                    log.trace({code: code, childOutput: childOutput}, 'Process exiting')
+                    log.trace({code: code, childOutput: childOutput}, 'Child process exit');
                     resolve({
                         exitCode: code,
                         output: childOutput
@@ -123,6 +123,8 @@ var callbackHandler = {
                 });
 
                 child.stdin.end(options.stdin + "\n");
+
+                log.trace('Done writing STDIN of child process');
 
             } catch (e) {
                 reject(e);

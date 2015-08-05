@@ -15,11 +15,21 @@ The following prerequisites are needed to run the Webhooks Tool.
 
 ### Deployment
 
-* `sudo apt-get install --yes nodejs-legacy supervisor` (for Debian, Ubuntu, Mint, etc.)
-* `sudo yum install -y nodejs supervisor` (for RHEL, CentOS, Fedora)
+For Debian-based (Debian, Ubuntu, Mint, etc.) (recommended)
+* `sudo apt-get install --yes nodejs-legacy supervisor`
 * `cd where-you-want-it-installed`
 * `sudo tar xfv webhooksTool.x.y.z.tar.gz`
 * `sudo webhooks-tool/install.sh`
+
+For Redhat-based (RHEL, CentOS, Fedora, etc.)
+* `sudo yum install -y epel-release`
+* `sudo yum install -y nodejs supervisor`
+* `sudo service supervisord start`
+* `cd where-you-want-it-installed`
+* `sudo tar xfv webhooksTool.x.y.z.tar.gz`
+* `sudo webhooks-tool/install.sh`
+
+Make sure ports required (8080) are open to both SPIDAMin and Webhooks Tool users 
 
 ## Setup
 

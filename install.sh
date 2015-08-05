@@ -1,6 +1,11 @@
 #!/bin/bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-SUPERVISORD_CONF=/etc/supervisor/supervisord.conf
+
+if [ -f /etc/supervisor/supervisord.conf ]; then
+	SUPERVISORD_CONF=/etc/supervisor/supervisord.conf
+else
+	SUPERVISORD_CONF=/etc/supervisord.conf
+fi
 
 echo Creating webhooks user if it "doesn't" exist
 id -u webhooks || useradd -r -U webhooks
