@@ -31,8 +31,11 @@ module.exports = function(dataPath) {
     
     //Write config to disk
     var write = function() {
-        return fs.writeFile(configPath, JSON.stringify(this), function() {
-            log.error({path: configPath, config: this},'Could not write configuration file');
+        var self = this;
+        return fs.writeFile(configPath, JSON.stringify(this), function(err) {
+            if (err) {
+                log.error({err: err, path: configPath, config: self},'Could not write configuration file');
+            }
         });
     };
 
