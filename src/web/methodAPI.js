@@ -52,7 +52,7 @@ module.exports = function(config, db, stopServer) {
             stdin: req.body.stdin,
             cmd: req.body.script,
             args: [req.body.name, req.body.eventName]
-        }).then(function(result) {
+        }, req.log).then(function(result) {
             result.scriptRan = true;
             res.send(result);
         }).catch(function(err) {
