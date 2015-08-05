@@ -1,8 +1,12 @@
+//Config
+//Handles application configuration
+
 var Promise = require('bluebird');
 var fs=Promise.promisifyAll(require('fs'));
 var log = require('./logger').config;
 var mkdirp = require('mkdirp');
 
+//Default config loaded when application is first started
 var initialConfig = {
     isNew: true,
     isSetup: false,
@@ -16,16 +20,23 @@ var initialConfig = {
     passServerInfo: true
 };
 
+//Keep these around when replacing config
 var methods = ['write','reload','replace'];
 
 module.exports = function(dataPath) {
     var configPath = dataPath + '/config.json';
+    
+    //These methods are added to the config and preserved when
+    //replaced/reloaded
+    
+    //Write config to disk
     var write = function() {
         return fs.writeFile(configPath, JSON.stringify(this), function() {
-            //TODO catch an error here.
+            log.error({path: configPath, config: this},'Could not write configuration file');
         });
     };
 
+    //Reload the config from disk
     var reload = function() {
         fs.readFileAsync(configPath).then(function(file) {
             this.replace(JSON.parse(file));
@@ -33,6 +44,7 @@ module.exports = function(dataPath) {
         });
     };
 
+    //Replace config
     var replace = function(newConfig) {
         var key;
         for (key in this) {
@@ -51,8 +63,10 @@ module.exports = function(dataPath) {
     var config;
 
     try {
+        //Try to load config from disk
         config = JSON.parse(fs.readFileSync(configPath));
     } catch (openConfigException) {
+        //Create defualt if it doesn't exist
         log.warn('Could not open ' + configPath + '. Assuming new install.');
         try {
             mkdirp.sync(dataPath);
@@ -60,13 +74,19 @@ module.exports = function(dataPath) {
             log.error(makePathException, 'Could not create ' + dataPath + '. Bailing...');
         }
         config = initialConfig;
+        
         //This is random data with ~ 100-bits of entropy
         config.cookieSecret = String(Math.floor(Math.random() * 10e15)) + String(Math.floor(Math.random() * 10e15));  
+
+        //Write config to disk
         write.apply(config);
     }
 
+    //These aren't loaded from the disk, but we want them in the config anyway
     config.appPath = fs.realpathSync(__dirname + '/..');
     config.dataPath = dataPath;
+
+    //Bind the config methods to the config object
     config.write = write.bind(config);
     config.reload = reload.bind(config);
     config.replace = replace.bind(config);

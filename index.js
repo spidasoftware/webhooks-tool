@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs');
 
+//Parse command line args
 var argv = require('yargs')
     .usage('Usage: $0 [options]')
     .default('d', __dirname + '/data')
@@ -19,10 +20,13 @@ var config = require('./src/config')(argv.dataPath);
 var webhookDB = require('./src/db');
 var web = require('./src/web');
 var log = require('./src/logger').main;
-var stopServer;
+
+var stopServer;  //Returned from web module, used to stop server when SIGINT is recieved
 
 try {
+    //Load DB
     webhookDB(config).then(function(db) {
+        //Start web interface
         stopServer = web(config, db);
     }).catch(function(err) {
         log.error(err);
@@ -31,11 +35,17 @@ try {
     log.error(err);
 }
 
+//Log uncaught erros
 process.on('unhandledRejection', function(err) {
     log.error(err);
 });
 
+//Stop server gracefully
 process.on('SIGINT', function() {
+    stopServer();
+});
+
+process.on('SIGTERM', function() {
     stopServer();
 });
 

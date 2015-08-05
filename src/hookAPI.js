@@ -1,3 +1,5 @@
+//Webhook API
+//Handles communication with min and scheduling or webhook renewal
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var log = require('./logger').hook;
@@ -13,6 +15,7 @@ var requestWithLog = function(options) {
     });
 };
 
+//Get the webhook from the array with that hookId
 var findByHookId = function(arr, hookId) {
     for(var i=0; i<arr.length; i++) {
         var hook = arr[i];
@@ -23,6 +26,7 @@ var findByHookId = function(arr, hookId) {
     return false;
 };
 
+//Rejects the promise if min returns a response with success == false
 var rejectOnFailure = function(response) {
     if (response.success) {
         return response;
@@ -43,6 +47,8 @@ var hookAPI = {
         }
     },
 
+    //Resync the webhooks in the DB with Min and schedule any renewals before
+    //they timeout
     refresh: function() {
         var self = this;
         return this.sync().then(function() {
@@ -58,6 +64,147 @@ var hookAPI = {
         });
     },
 
+    //Sync local webhooks with ones in Min
+    sync: function() {
+        var self = this;
+
+        return Promise.join(this.db.all('webhooks'), this.getRemote(), function(localHooks, remoteHooks) {
+            //This finds all remote changes that need to be done, and returns a
+            //promise that is resolved when each change is completed
+            return Promise.all([].concat(
+                //Missing remote hooks
+                localHooks.map(function(local) {
+                    var remoteHook = findByHookId(remoteHooks, local.hookId);
+                    
+                    //If we have the remote hook locally
+                    if (remoteHook) {
+                        if (remoteHook.leaseEnd === local.leaseEnd) {
+                            //If leaseEnd matches we are good.
+                            return Promise.resolve(local);
+                        } else {
+                            //Otherwise update the leaseEnd on the local DB
+                            local.leaseEnd = remoteHook.leaseEnd;
+                            return self.db.update('webhooks',local._id,local);
+                        }
+                    } else {
+                        log.debug({localHook: local}, 'Syncing local -> remote');
+                        //Otherwise, create the hooks remotely
+                        return self.update(local); 
+                    }
+                    
+                }),
+
+                //+ Missing local hooks
+                remoteHooks.filter(function(remote) {
+                    //Find remoteHooks that don't exist locally
+                    return !findByHookId(localHooks, remote.hookId);
+                }).map(function(remote) {
+                    log.debug({hookId: remote.hookId}, "Sync: delete missing local from remote");
+                    //Remove the hooks remotely
+                    return self.delete(remote.hookId, 'hookId');
+                })
+            ));
+        });
+    },
+    
+    //Gets all remote webhooks for this server
+    getRemote: function() {
+        return this.remoteAction('view', { 
+            url: this.getLocalURL()
+        }).then(function(body) {
+            return body.webhooks;
+        });
+    },
+
+    //----------Rest API update triggers--------------
+    //These are called by the rest API with an update, create, or delete
+    //happens to a webhook so we can keep the min server in sync
+    update: function(hook) {
+        log.debug({hook: hook},'hook update'); 
+        
+        return this.register(hook);
+    },
+
+    delete: function(id, type) {
+        var self = this;
+        type = type || 'id';
+
+        log.debug({id: id},'hook delete'); 
+
+        if (type === 'id') {
+            return this.db.findById('webhooks',id).then(function(hook) {
+                if (hook) {
+                    self.cancelRenewal(hook._id);
+                    return self.remoteAction('unregister',{hookId: hook.hookId}).then(rejectOnFailure);
+                } else {
+                    return true;
+                }
+            });
+        } else if (type === 'hookId') {
+            return self.remoteAction('unregister',{hookId: id}).then(rejectOnFailure)
+        }
+    },
+
+    create: function(hook) {
+        log.debug({hook: hook},'hook create'); 
+
+        return this.register(hook);
+    },
+    //--------------------------------------------------
+    
+    //Register a webhook
+    register: function(hook) {
+        log.debug({hook: hook}, 'registering');
+
+        var request = {
+            url: this.getLocalURL(),
+            channel: hook.channel,
+            eventFilter: hook.eventFilter,
+            leaseTime: this.config.leaseTime
+        };
+
+        if (hook.hookId) {
+            request.hookId = hook.hookId;
+        }
+
+        var self = this;
+
+        return this.remoteAction('register', request)
+            .then(rejectOnFailure)
+            .then(function(response) {
+                hook.hookId = response.hookId;
+                hook.leaseEnd = response.leaseEnd;
+
+                self.scheduleRenewal(response.hookId, response.leaseEnd);
+                return hook;
+            });
+    },
+    
+    //Execute webhookAPI action
+    remoteAction: function(action, requestBody) {
+        return requestWithLog({
+            url: this.getRemoteURL(action),
+            method: 'POST',
+            json: true,
+            body: requestBody,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).spread(function(response, body) {
+            return body;
+        });
+    },
+
+    //Get configured urls
+    getRemoteURL: function(action) {
+        return this.config.minBaseUrl + '/' + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
+    },
+    getLocalURL: function() {
+        return this.config.externalServerUrl; + '/callback';
+    },
+
+    //pendingRenewals contains a map of hookId -> the promise that is resolved
+    //when a webhook is renewed (so, that it can be cancelled if needed)
     pendingRenewals: {},
     cancelRenewal: function(hookId) {
         //If we have a pending renewal for the hook
@@ -104,146 +251,11 @@ var hookAPI = {
         }
     },
 
+    //Cancel all pending renewals
     destroy: function() {
         for(hookId in this.pendingRenewals) {
             this.cancelRenewal(hookId);
         }
-    },
-
-    //Rest API update triggers
-    update: function(hook) {
-        log.debug({hook: hook},'hook update'); 
-        
-        return this.register(hook);
-    },
-
-    delete: function(id, type) {
-        var self = this;
-        type = type || 'id';
-
-        log.debug({id: id},'hook delete'); 
-
-        if (type === 'id') {
-            return this.db.findById('webhooks',id).then(function(hook) {
-                if (hook) {
-                    self.cancelRenewal(hook._id);
-                    return self.remoteAction('unregister',{hookId: hook.hookId}).then(rejectOnFailure);
-                } else {
-                    return true;
-                }
-            });
-        } else if (type === 'hookId') {
-            return self.remoteAction('unregister',{hookId: id}).then(rejectOnFailure)
-        }
-    },
-
-    create: function(hook) {
-        log.debug({hook: hook},'hook create'); 
-
-        return this.register(hook);
-    },
-
-    //Register a webhook
-    register: function(hook) {
-        log.debug({hook: hook}, 'registering');
-
-        var request = {
-            url: this.getLocalURL(),
-            channel: hook.channel,
-            eventFilter: hook.eventFilter,
-            leaseTime: this.config.leaseTime
-        };
-
-        if (hook.hookId) {
-            request.hookId = hook.hookId;
-        }
-
-        var self = this;
-
-        return this.remoteAction('register', request)
-            .then(rejectOnFailure)
-            .then(function(response) {
-                hook.hookId = response.hookId;
-                hook.leaseEnd = response.leaseEnd;
-
-                self.scheduleRenewal(response.hookId, response.leaseEnd);
-                return hook;
-            });
-    },
-
-    //Sync local webhooks with ones in Min
-    sync: function() {
-        var self = this;
-
-        return Promise.join(this.db.all('webhooks'), this.getRemote(), function(localHooks, remoteHooks) {
-            //This finds all remote changes that need to be done, and returns a
-            //promise that is resolved when each change is completed
-            return Promise.all([].concat(
-                //Missing remote hooks
-                localHooks.map(function(local) {
-                    var remoteHook = findByHookId(remoteHooks, local.hookId);
-                    
-                    //If we have the remote hook locally
-                    if (remoteHook) {
-                        if (remoteHook.leaseEnd === local.leaseEnd) {
-                            //If leaseEnd matches we are good.
-                            return Promise.resolve(local);
-                        } else {
-                            //Otherwise update the leaseEnd on the local DB
-                            local.leaseEnd = remoteHook.leaseEnd;
-                            return self.db.update('webhooks',local._id,local);
-                        }
-                    } else {
-                        log.debug({localHook: local}, 'Syncing local -> remote');
-                        //Otherwise, create the hooks remotely
-                        return self.update(local); 
-                    }
-                    
-                }),
-
-                //+ Missing local hooks
-                remoteHooks.filter(function(remote) {
-                    //Find remoteHooks that don't exist locally
-                    return !findByHookId(localHooks, remote.hookId);
-                }).map(function(remote) {
-                    log.debug({hookId: remote.hookId}, "Sync: delete missing local from remote");
-                    //Remove the hooks remotely
-                    return self.delete(remote.hookId, 'hookId');
-                })
-            ));
-        });
-    },
-
-    //Get configured urls
-    getRemoteURL: function(action) {
-        return this.config.minBaseUrl + '/' + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
-    },
-    getLocalURL: function() {
-        return this.config.externalServerUrl; //+ '/callback';
-    },
-
-    //Gets all remote webhooks for this server
-    getRemote: function() {
-        return this.remoteAction('view', { 
-            url: this.getLocalURL()
-        }).then(function(body) {
-            return body.webhooks;
-        });
-    },
-
-    //Execute webhookAPI action
-    remoteAction: function(action, requestBody) {
-        return requestWithLog({
-            url: this.getRemoteURL(action),
-            method: 'POST',
-            json: true,
-            body: requestBody,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).spread(function(response, body) {
-            return body;
-        });
     }
 };
 

@@ -2,6 +2,11 @@ var Promise = require('bluebird');
 var Router = require('express').Router;
 var hookAPI = require('../hookAPI');
 
+//Identity function, it comes in handy
+var I = function(x) { return x; };
+
+//Ember sometimes wants the singular for a model name and sometimes the plural,
+//so use this to convert
 var singularMap = {
     users: 'user',
     webhooks: 'webhook',
@@ -9,6 +14,8 @@ var singularMap = {
     logs: 'log'
 };
 
+//Can trigger additional things to happen when a model is updated through the
+//REST API, currently used to keep min in sync with the server
 var trigger = function(event, model, o) {
     if (model === 'webhooks') {
         return hookAPI[event](o);
@@ -17,8 +24,9 @@ var trigger = function(event, model, o) {
     }
 };
 
-var I = function(x) { return x; };
-
+//Returns a function that is used to filter any objects before sending to the
+//server
+//Currently used to stop hashed passwords from being sent to the serve
 var filter = function(model) {
     if (model === 'users') {
         return function(user) { 
@@ -62,6 +70,7 @@ module.exports = function(config, db) {
 
     var router = Router();
 
+    //Ember defined REST methods below
     router.get('/:model/:id', function(req, res) {
         db.findById(req.params.model, req.params.id)
         .then(buildResultSender(req, res));

@@ -1,3 +1,5 @@
+//Logger
+//Wrapper for bunyan used to setup and define logs
 var bunyan = require('bunyan');
 var mkdirp = require('mkdirp');
 

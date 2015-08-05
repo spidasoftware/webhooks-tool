@@ -72,7 +72,7 @@ frisby.create('Create logEntry')
                         frisby.create('Verify webhook created on Min')
                             .get(mockMin + '/~webhooks')
                             .expectJSON(webhookResp.webhook.hookId, {
-                                url: 'http://localhost:8080',
+                                url: 'http://localhost:8080/callback',
                                 channel: 'Project',
                                 eventFilter: '.*',
                                 hookId: webhookResp.webhook.hookId

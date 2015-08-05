@@ -1,3 +1,5 @@
+// Webhook Callback Handle
+// Handle running scripts when the hook callback is sent
 var Promise = require('bluebird');
 var spawn = require('child_process').spawn;
 
@@ -11,69 +13,7 @@ var callbackHandler = {
         this.db = db;
     },
 
-    executeChildProcess: function(options) {
-        return new Promise(function (resolve, reject) {
-            try {
-                var child = spawn(options.cmd, options.args);
-
-                var errorHandler = function(err) {
-                    if (errorTranslations[err.message]) {
-                        err.display=errorTranslations[err.message];
-                    } else {
-                        err.display=err.message;
-                    }
-
-                    reject(err);
-                };
-
-                child.on('error', errorHandler);
-                child.stdin.on('error', errorHandler);
-                child.stdout.on('error', errorHandler);
-
-                child.stdout.setEncoding('utf8');
-
-                //This could probably be done more efficiently by not using 'flowing' mode
-                var childOutput = '';
-                child.stdout.on('data', function(data) {
-                    childOutput += data;
-                });
-
-                child.on('exit', function(code) {
-                    resolve({
-                        exitCode: code,
-                        output: childOutput
-                    });
-                });
-
-                child.stdin.end(options.stdin);
-
-            } catch (e) {
-                reject(e);
-            }
-        });
-    },
-
-    executeScript: function(hook, data, log) {
-        var logData = this.config.logCallbackData ? JSON.parse(data) : { name: data.name, eventName: data.eventName };
-        log.debug({logData: logData}, 'Executing script');
-        var self = this;
-
-        return Promise.join(
-            this.db.addLogEntry(hook.log, 'Executing script', logData),
-            this.executeChildProcess({
-                stdin: data,
-                cmd: hook.script,
-                args: [data.name, data.eventName]
-            }).then(function(result) {
-                if (!self.config.logScriptOut) {
-                    result.output = 'NOT LOGGED';
-                }
-                log.debug({result: result}, 'Script complete');
-                return self.db.addLogEntry(hook.log, 'Script complete', result);
-            })
-        );
-    },
-
+    //Web request handler
     handle: function(req, res) {
         if (!req.query.wait) {
             //Unless the wait query parameter is passed respond right away
@@ -120,9 +60,75 @@ var callbackHandler = {
                 req.log.warn('Recieved callback for hook ' + req.body.hookId + ', but I do not know about that hook');
             }
         });
+    },
+
+    //Execute the script associated with the hook
+    executeScript: function(hook, data, log) {
+        var logData = this.config.logCallbackData ? JSON.parse(data) : { name: data.name, eventName: data.eventName };
+        log.debug({logData: logData}, 'Executing script');
+        var self = this;
+
+        return Promise.join(
+            this.db.addLogEntry(hook.log, 'Executing script', logData),
+            this.executeChildProcess({
+                stdin: data,
+                cmd: hook.script,
+                args: [data.name, data.eventName]
+            }).then(function(result) {
+                if (!self.config.logScriptOut) {
+                    result.output = 'NOT LOGGED';
+                }
+                log.debug({result: result}, 'Script complete');
+                return self.db.addLogEntry(hook.log, 'Script complete', result);
+            })
+        );
+    },
+
+    //Forks a child process and returns a promise that resolves when it is complete
+    executeChildProcess: function(options) {
+        return new Promise(function (resolve, reject) {
+            try {
+                var child = spawn(options.cmd, options.args);
+
+                var errorHandler = function(err) {
+                    if (errorTranslations[err.message]) {
+                        err.display=errorTranslations[err.message];
+                    } else {
+                        err.display=err.message;
+                    }
+
+                    reject(err);
+                };
+
+                child.on('error', errorHandler);
+                child.stdin.on('error', errorHandler);
+                child.stdout.on('error', errorHandler);
+
+                child.stdout.setEncoding('utf8');
+
+                //This could probably be done more efficiently by not using 'flowing' mode
+                var childOutput = '';
+                child.stdout.on('data', function(data) {
+                    childOutput += data;
+                });
+
+                child.on('exit', function(code) {
+                    resolve({
+                        exitCode: code,
+                        output: childOutput
+                    });
+                });
+
+                child.stdin.end(options.stdin);
+
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 };
 
+//Bind handle function
 ['handle'].forEach(function(method) {
     callbackHandler[method]=callbackHandler[method].bind(callbackHandler);
 });

@@ -1,3 +1,5 @@
+//DB
+//Handles data persistance
 var Promise=require('bluebird');
 var Datastore=require('nedb');
 var hash = require('./login').hash;
@@ -5,6 +7,7 @@ var log = require('./logger').db;
 
 Promise.promisifyAll(Datastore.prototype);
 
+//This is called when creating the initial DB
 var onNewDB = function(config, db) {
     log.info('Creating new DB');
 
@@ -25,6 +28,7 @@ var arrayWrap = function(x) {
 };
 
 module.exports = function(config) {
+    //The collections used by the app
     var stores = {
         users: new Datastore({
             filename: config.dataPath + '/users.db',
@@ -45,15 +49,22 @@ module.exports = function(config) {
     };
 
     var db={
+        //Some needed non-REST methods
+        //Returns a user if name and hasedPassword match a user
         loginUser: function(name, hashedPassword) {
             return stores.users.findOneAsync({name: name, password: hashedPassword});
         },
+        //Useed to update a webhooks leaseEnd when it is renewed
         webhookLeaseEnd: function(hookId, leaseEnd) {
             return stores.webhooks.updateAsync({hookId: hookId}, {$set: {leaseEnd: leaseEnd}});
         },
+
+        //Get a wehook by it's hookId
         getHookByHookId: function(hookId) {
             return stores.webhooks.findOneAsync({hookId: hookId});
         },
+
+        //Add a log entry to a log
         addLogEntry: function(logId, message, data) {
             var newEntry = {
                 timestamp: Date.now(),
