@@ -1,0 +1,4 @@
+{
+  "ignore_dirs": ["tmp","dist","data","logs","package"],
+  "fsevents_latency": 0.1
+}

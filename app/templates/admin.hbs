@@ -1,0 +1,51 @@
+<div class="row collapse">
+  <div class="small-4 columns"><span class="prefix">Export</span></div>
+  <div class="small-8 columns">
+    <ul class="button-group">
+      <li><a class="postfix button" href="/api/method/export/config" download>Config</a></li>
+      <li><a class="postfix button" href="/api/method/export/users" download>Users</a></li>
+      <li><a class="postfix button" href="/api/method/export/webhooks" download>Webhooks</a></li>
+      <li><a class="postfix button" href="/api/method/export/everything" download>Everything</a></li>
+    </ul>
+  </div>
+</div>
+<div class="row collapse">
+  <div class="small-4 columns"><span class="prefix">Import</span></div>
+  <div class="small-8 columns">
+    <ul class="button-group">
+      <li><a class="postfix button" {{action 'import' 'config'}}>Config</a></li>
+      <li><a class="postfix button" {{action 'import' 'users'}}>Users</a></li>
+      <li><a class="postfix button" {{action 'import' 'webhooks'}}>Webhooks</a></li>
+      <li><a class="postfix button" {{action 'import' 'everything'}}>Everything</a></li>
+    </ul>
+  </div>
+</div>
+{{#if selectingFile}}
+  <div class="row">
+    <div class="small-12 columns">
+      {{file-upload type=fileType action='fileSelected'}}
+    </div>
+  </div>
+{{/if}}
+{{#if uploadFailed}}
+  <div class="row">
+    <div class="small-12 columns">
+      <span class="error">{{errorMessage}}</span>
+    </div>
+  </div>
+{{/if}}
+<div class="row">
+  <div class="small-12 columns">
+    <ul class="right button-group">
+      <li>
+        <a class="small button" {{action 'resync'}}>Resync</a>
+      </li>
+      <li>
+        <a class="small button" {{action 'restart'}}>Restart</a>
+      </li>
+      <li>
+        <a class="small button" href="/api/method/logs" download>Download Logs</a>
+      </li>
+    </ul>
+  </div>
+</div>

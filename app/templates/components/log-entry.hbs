@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="small-4 columns">
+    {{live-moment type='plain' value=logEntry.timestamp format='calendar'}}
+  </div>
+  <div class="small-6 columns">
+    {{logEntry.message}}
+  </div>
+  <div class="small-2 columns">
+    <a class="tiny right button" {{action 'toggleDetails'}}>{{if showingDetails 'Hide Details' 'Show Details'}}</a> 
+  </div>
+</div>
+{{#if showingDetails}}
+  {{#each detailArray as |detail|}}
+    <div class="row collapse">
+      <div class="small-2 small-offset-1 columns">
+        <span class="prefix">{{detail.key}}</span>
+      </div>
+      <div class="small-9 columns">
+        {{#if detail.isLarge}}
+          {{textarea disabled=true value=detail.value}}
+        {{else}}
+          <span class="postfix">{{detail.value}}</span>
+        {{/if}}
+      </div>
+    </div>
+  {{else}}
+    <div class="row collapse">
+      <div class="small-11 small-offset-1 columns">No details</div>
+    </div>
+  {{/each}}
+{{/if}}

@@ -1,0 +1,21 @@
+<ul class="pagination">
+  <li class="arrow {{if isFirst 'unavailable'}}">
+		<a disabled={{boolean-attr isFirst}} {{action 'firstPage'}}>&laquo;</a>
+	</li>
+  <li  class="arrow {{if isFirst 'unavailable'}}">
+    <a disabled={{boolean-attr isFirst}} {{action 'prevPage'}}>&lsaquo;</a>
+	</li>
+	{{#each page in pages}}
+		{{#if page.gap}}
+			<li class="unavailable">&hellip;</li>
+		{{else}}
+      <li class={{page.current}}><a {{action 'gotoPage' page.page}}>{{page.page}}</a></li>
+		{{/if}}
+	{{/each}}
+  <li class="arrow {{if isLast 'unavailable'}}">
+    <a disabled={{boolean-attr isLast}} {{action 'nextPage'}}>&rsaquo;</a>
+	</li>
+	<li {{bind-attr class=":arrow isLast:unavailable"}}>
+		<a disabled={{boolean-attr isLast}} {{action 'lastPage'}}>&raquo;</a>
+	</li>
+</ul>

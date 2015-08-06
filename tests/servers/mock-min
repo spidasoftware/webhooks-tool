@@ -1,0 +1,119 @@
+#!/usr/bin/env node
+var express = require('express');
+var bodyParser = require('body-parser').json();
+
+var app = express();
+
+var webhooks = {};
+var testHookCount = 0;
+var mockWebhookAPI = express.Router();
+
+mockWebhookAPI.use(function(req, res, next) {
+    if (req.query.apiToken === 'API_TOKEN') {
+        next();
+    } else {
+        console.log('Bad API TOKEN');
+        res.sendStatus(403);
+    }
+});
+
+mockWebhookAPI.use(function(req, res, next) {
+    console.log(req.path);
+    console.log(req.body);
+    //res._send = res.send;
+    //res.send = function(json) {
+    //    console.log('Sending: ' + JSON.stringify(json));
+    //    res._send(json);
+    //};
+    next();
+});
+
+mockWebhookAPI.post('/register', function(req, res) {
+    var body = req.body;
+    if (!body.hookId) {
+       body.hookId = 'TESTHOOK-' + (testHookCount++);
+    }
+    body.leaseEnd = Date.now() + (body.leaseTime * 1000);
+    delete body.leaseTime;
+    webhooks[body.hookId] = body;
+    res.send({
+        hookId: body.hookId,
+        success: true,
+        message: 'It worked!',
+        leaseEnd: body.leaseEnd
+    });
+});
+
+mockWebhookAPI.post('/unregister', function(req, res) {
+    delete webhooks[req.body.hookId];
+    res.send({
+        hookIds: [ req.body.hookId],
+        success: true,
+        message: 'Hook deregistered'
+    });
+});
+
+mockWebhookAPI.post('/renew', function(req, res) {
+    var hookId = req.body.hookId;
+
+    if (!webhooks[hookId]) {
+        webhooks[hookId] = {};
+    }
+
+    webhooks[hookId].leaseEnd = Date.now() + req.body.leaseTime * 1000;
+    res.send({
+        hookIds: [req.body.hookId],
+        success: true,
+        message: 'Renewed',
+        leaseEnd: webhooks[req.body.hookId].leaseEnd
+    });
+});
+
+mockWebhookAPI.post('/view', function(req, res) {
+    res.send({
+        webhooks: Object.getOwnPropertyNames(webhooks).map(function(hookId) {
+            var webhook = webhooks[hookId];
+            return {
+                url: webhook.url,
+                channel: webhook.channel,
+                eventFilter: webhook.eventFilter,
+                hookId: webhook.hookId,
+                leaseEnd: webhook.leaseEnd
+            };
+        })
+    });
+});
+
+app.use('/projectmanager/webhookAPI', bodyParser, mockWebhookAPI);
+
+app.get('/~clear', function(req, res) {
+    webhooks = {};
+    res.sendStatus(200);
+});
+
+app.get('/~remove/:hookId', function(req, res) {
+    delete webhooks[req.params.hookId];
+    res.sendStatus(200);
+});
+
+app.get('/~check/:hookId', function(req, res) {
+    res.send(webhooks[req.params.hookId]);
+});
+
+app.get('/~kill', function(req, res) {
+    res.sendStatus(200);
+    setTimeout(function() {
+        process.exit(0);
+    },100);
+});
+
+app.get('/~webhooks', function(req, res) {
+    res.send(webhooks);
+});
+
+app.use(function(req, res) {
+    res.sendStatus(404);
+});
+
+app.listen(8081);
+
