@@ -17,8 +17,13 @@ var initialConfig = {
     leaseLeadTime: 24 * 60 * 60, //One day
     logScriptOut: false,
     logCallbackData: false,
-    passServerInfo: true
+    passServerInfo: true,
+    minBaseUrl: process.env.WEBHOOK_MIN_BASE_URL,
+    externalServerURL: process.env.WEBHOOK_SERVER_URL,
+    apiToken: process.env.WEBHOOK_MIN_API_TOKERN
 };
+
+
 
 //Keep these around when replacing config
 var methods = ['write','reload','replace'];

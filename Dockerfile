@@ -14,15 +14,13 @@ RUN apk --update add nodejs=0.12.2-r0 make=4.1-r0 g++=4.9.2-r5 git=2.4.1-r0 pyth
 	&& cp /build/start-docker.sh /srv/webhooks-tool \
 	&& rm -rf /build \
 	&& apk del make g++ git python \
-	&& npm uninstall -g grunt-cli bower
+	&& npm uninstall -g grunt-cli bower \
 	&& mkdir /data
+WORKDIR /srv/webhooks-tool
+
+ENV WEBHOOK_MIN_BASE_URL="http://spida_spidamin_1:8080/"
+ENV WEBHOOK_SERVER_URL="http://spida_webhooks_1:8080/"
 
 VOLUME ["/data"]
 EXPOSE 8080
-ENTRYPOINT ["/srv/webhooks-tool/start-docker.sh","-d","/data"]
-
-
-
-
-
-
+ENTRYPOINT ["/srv/webhooks-tool/start-docker.sh"]
