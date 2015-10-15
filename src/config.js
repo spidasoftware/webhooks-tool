@@ -19,7 +19,7 @@ var initialConfig = {
     logCallbackData: false,
     passServerInfo: true,
     minBaseUrl: process.env.WEBHOOK_MIN_BASE_URL,
-    externalServerURL: process.env.WEBHOOK_SERVER_URL,
+    externalServerUrl: process.env.WEBHOOK_SERVER_URL,
     apiToken: process.env.WEBHOOK_MIN_API_TOKERN
 };
 
