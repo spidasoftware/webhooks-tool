@@ -95,7 +95,7 @@ export default Ember.Controller.extend({
         },
 
         logout: function() {
-            Ember.$.get('/logout');
+            Ember.$.get(config.baseURL + 'logout');
             this.set('willBeLoggedOut', false);
             this.set('isLoggedIn',false);
             this.send('stopWorking');
