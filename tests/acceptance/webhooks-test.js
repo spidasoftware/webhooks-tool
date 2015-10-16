@@ -221,9 +221,10 @@ test('test script', function(assert) {
         assert.equal(find('.row:contains(Send Server Info)').length, 1, 'Send Server Info row is shown');
         assert.equal(find('.row:contains(API Token)').length, 0, 'API Token field is not shown');
         assert.equal(find('.row:contains(SPIDAMin Server)').length, 0, 'SPIDAMin Server field is not shown');
-    })
+    });
     
     andThen(function() {
+        console.log(find('.row:contains(Script Input) textarea').val());
         assert.deepEqual(JSON.parse(find('.row:contains(Script Input) textarea').val()), scriptInputNoServerInfo, 'Script Input is correct');
         click('.row:contains(Send Server Info) input');
     });
@@ -236,6 +237,7 @@ test('test script', function(assert) {
     });
 
     andThen(function() {
+        console.log(find('.row:contains(Script Input) textarea').val());
         assert.deepEqual(JSON.parse(find('.row:contains(Script Input) textarea').val()), scriptInputWithServerInfo, 'Script Input is correct');
         click('a.button:contains(Execute Script)');
     });
@@ -246,6 +248,7 @@ test('test script', function(assert) {
     });
 
     andThen(function() {
+        console.log(find('.row:contains(Script Output) textarea').val());
         assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
         click('#logout');
     });
