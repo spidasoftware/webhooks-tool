@@ -3,6 +3,8 @@ import Restart from 'webhooks-tool/mixins/restart';
 import config from 'webhooks-tool/config/environment';
 
 export default Ember.Controller.extend(Restart,{
+    baseUrl: config.baseURL,
+
     actions: {
         import: function(type) {
             this.set('selectingFile',true);
