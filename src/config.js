@@ -20,7 +20,7 @@ var initialConfig = {
     passServerInfo: true,
     minBaseUrl: process.env.WEBHOOK_MIN_BASE_URL,
     externalServerUrl: process.env.WEBHOOK_SERVER_URL,
-    apiToken: process.env.WEBHOOK_MIN_API_TOKERN
+    apiToken: process.env.WEBHOOK_MIN_API_TOKEN
 };
 
 
