@@ -33,7 +33,11 @@ Make sure ports required (8080) are open to both SPIDAMin and Webhooks Tool user
 
 ## Setup
 
-The webhooks tool server will initially start over HTTP on port 8080.  An initial user is setup with username: admin and password: changemeplease.  To begin setting up the application, navigate to http://servername:8080 with your browser and log in using the default admin credentials.
+The webhooks tool server will initially start over HTTP on port 8080.  To begin setting up the application, navigate to http://servername:8080 with your browser and log in using the default admin credentials below. 
+```
+username: admin
+password: changemeplease
+```
 
 ### Change default admin password
 
