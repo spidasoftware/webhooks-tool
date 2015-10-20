@@ -22,14 +22,3 @@ describe('hookAPI', function() {
 		expect(hookAPI.getLocalURL()).toEqual("http://localhost:8888/callback");
 	});
 });
-
-
-
-
-
-    // getRemoteURL: function(action) {
-    //     return this.endWithSlash(this.config.minBaseUrl) + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
-    // },
-    // getLocalURL: function() {
-    //     return this.endWithSlash(this.config.externalServerUrl) + 'callback';
-    // },
