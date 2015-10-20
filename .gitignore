@@ -19,6 +19,7 @@ testem.log
 #Webhook Server Specific
 /data
 /logs
+/backend-tests/logs
 /package
 webhooksTool*.tar.gz
 webhooks-tool.pid
