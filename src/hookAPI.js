@@ -195,12 +195,20 @@ var hookAPI = {
         });
     },
 
+    endWithSlash: function(url){
+    	url = url.trim();
+    	if(url.charAt(url.length - 1) !== '/'){
+    		url += '/';
+    	}
+    	return url;
+    },
+
     //Get configured urls
     getRemoteURL: function(action) {
-        return this.config.minBaseUrl + '/' + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
+        return this.endWithSlash(this.config.minBaseUrl) + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
     },
     getLocalURL: function() {
-        return this.config.externalServerUrl + '/callback';
+        return this.endWithSlash(this.config.externalServerUrl) + 'callback';
     },
 
     //pendingRenewals contains a map of hookId -> the promise that is resolved
