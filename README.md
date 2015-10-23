@@ -120,6 +120,8 @@ Additionally, if the "Pass Server Info to Script" configuration option is select
 * apiToken -- The apiToken used by the application to connect to SPIDAMin
 * minServer -- The configured SPIDAMin base URL 
 
+[Example Scripts](examples)
+
 ## Admin
 
 ![Admin Page](doc/admin.png)

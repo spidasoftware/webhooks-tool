@@ -170,7 +170,7 @@
     <span class="prefix">Comments</span>
   </div>
   <div class="small-8 columns">
-    {{textarea value=webhook.comments}}
+    {{textarea value=webhook.comment}}
   </div>
 </div>
 <div class="row">
@@ -197,6 +197,7 @@
   </div>
 </div>
 {{#if showingLogs}}
+  <hr/>
   {{#each pagedContent as |logEntry|}}
     {{log-entry logEntry=logEntry}}
   {{/each}}
