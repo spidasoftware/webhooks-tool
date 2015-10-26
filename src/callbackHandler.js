@@ -64,7 +64,8 @@ var callbackHandler = {
 
     //Execute the script associated with the hook
     executeScript: function(hook, data, log) {
-        var logData = this.config.logCallbackData ? JSON.parse(data) : { name: data.name, eventName: data.eventName };
+    	var dataAsJson = JSON.parse(data);
+        var logData = this.config.logCallbackData ? dataAsJson : { name: dataAsJson.name, eventName: dataAsJson.eventName };
         log.debug({logData: logData}, 'Executing script');
         var self = this;
 
@@ -73,7 +74,7 @@ var callbackHandler = {
             this.executeChildProcess({
                 stdin: data,
                 cmd: hook.script,
-                args: [data.name, data.eventName]
+                args: [dataAsJson.name, dataAsJson.eventName]
             },log).then(function(result) {
                 if (!self.config.logScriptOut) {
                     result.output = 'NOT LOGGED';

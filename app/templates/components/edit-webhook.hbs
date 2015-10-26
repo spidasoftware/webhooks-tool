@@ -170,7 +170,7 @@
     <span class="prefix">Comments</span>
   </div>
   <div class="small-8 columns">
-    {{textarea value=webhook.comments}}
+    {{textarea value=webhook.comment}}
   </div>
 </div>
 <div class="row">
@@ -184,15 +184,20 @@
   <div class="small-6 columns">
     <ul class="button-group right">
       <li>
-        <a class="small button {{unless webhook.isDirty 'disabled'}}" {{action 'save'}}>Save</a>
+        {{#foundation-button enabled=webhook.isDirty action='save'}}
+            Save
+        {{/foundation-button}}
       </li>
       <li>
-        <a class="small button {{unless webhook.isDirty 'disabled'}}" {{action 'cancel'}}>Cancel</a>
+        {{#foundation-button action='cancel'}}
+            Cancel
+        {{/foundation-button}}
       </li>
     </ul>
   </div>
 </div>
 {{#if showingLogs}}
+  <hr/>
   {{#each pagedContent as |logEntry|}}
     {{log-entry logEntry=logEntry}}
   {{/each}}

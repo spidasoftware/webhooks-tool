@@ -248,7 +248,6 @@ test('test script', function(assert) {
     });
 
     andThen(function() {
-        console.log(find('.row:contains(Script Output) textarea').val());
         //The below is commented until we can find a way to wait until the below external script has actually run.
         //assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
         click('#logout');

@@ -33,7 +33,9 @@
   <div class="small-12">
     <ul class="button-group right">
       <li>
-        <a class="tiny button {{unless dirtyConfig 'disabled'}}" {{action 'save'}}>Save</a>
+        {{#foundation-button enabled=dirtyConfig action='save'}}
+            Save
+        {{/foundation-button}}
       </li>
       <li>
         <a class="tiny button" {{action 'restart'}}>Restart</a>
