@@ -106,12 +106,18 @@ var callbackHandler = {
                 child.on('error', errorHandler);
                 child.stdin.on('error', errorHandler);
                 child.stdout.on('error', errorHandler);
+                child.stderr.on('error', errorHandler);
 
                 child.stdout.setEncoding('utf8');
+                child.stderr.setEncoding('utf8');
 
                 //This could probably be done more efficiently by not using 'flowing' mode
                 var childOutput = '';
                 child.stdout.on('data', function(data) {
+                    childOutput += data;
+                });
+
+                child.stderr.on('data', function(data) {
                     childOutput += data;
                 });
 
