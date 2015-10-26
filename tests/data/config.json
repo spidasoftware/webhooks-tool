@@ -1,1 +1,15 @@
-{"minBaseUrl":"http://missingslash/","externalServerUrl":"https://notmissingslash/","normalProperty":"not a url"}
+{
+  "isNew": false,
+  "dbVersion": 0,
+  "httpPort": 8080,
+  "product": "projectmanager",
+  "cookieSecret": "NOMNOMNOM",
+  "leaseTime": 1200,
+  "leaseLeadTime": 200,
+  "logScriptOut": true,
+  "logCallbackData": true,
+  "externalServerUrl": "http://localhost:8080",
+  "apiToken": "API_TOKEN",
+  "minBaseUrl": "http://localhost:8081",
+  "passServerInfo": true
+}
