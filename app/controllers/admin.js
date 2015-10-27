@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import Restart from 'webhooks-tool/mixins/restart';
+import config from 'webhooks-tool/config/environment';
 
 export default Ember.Controller.extend(Restart,{
+    baseUrl: config.baseURL,
+
     actions: {
         import: function(type) {
             this.set('selectingFile',true);
@@ -19,7 +22,7 @@ export default Ember.Controller.extend(Restart,{
             formData.append('import',file);
 
             this.send('startWorking','Importing ' + type + ' from ' + file.name + '...');
-            Ember.$.ajax('/api/method/import/' + type, {
+            Ember.$.ajax(config.baseURL + 'api/method/import/' + type, {
                 method: 'POST',
                 data: formData,
                 processData: false,
@@ -60,7 +63,7 @@ export default Ember.Controller.extend(Restart,{
         resync: function() {
             this.send('startWorking','Syncing...');
             var self = this;
-            Ember.$.ajax('/api/method/resync').then(function() {
+            Ember.$.ajax(config.baseURL + 'api/method/resync').then(function() {
                 Ember.run(function() {
                     self.send('stopWorking');
                 });

@@ -221,6 +221,10 @@ test('test script', function(assert) {
         assert.equal(find('.row:contains(Send Server Info)').length, 1, 'Send Server Info row is shown');
         assert.equal(find('.row:contains(API Token)').length, 0, 'API Token field is not shown');
         assert.equal(find('.row:contains(SPIDAMin Server)').length, 0, 'SPIDAMin Server field is not shown');
+    });
+    
+    andThen(function() {
+        console.log(find('.row:contains(Script Input) textarea').val());
         assert.deepEqual(JSON.parse(find('.row:contains(Script Input) textarea').val()), scriptInputNoServerInfo, 'Script Input is correct');
         click('.row:contains(Send Server Info) input');
     });
@@ -233,6 +237,7 @@ test('test script', function(assert) {
     });
 
     andThen(function() {
+        console.log(find('.row:contains(Script Input) textarea').val());
         assert.deepEqual(JSON.parse(find('.row:contains(Script Input) textarea').val()), scriptInputWithServerInfo, 'Script Input is correct');
         click('a.button:contains(Execute Script)');
     });
@@ -240,8 +245,11 @@ test('test script', function(assert) {
     andThen(function() {
         assert.equal(find('.error').length, 0, 'No error messages shown');
         assert.equal(find('.row:contains(Script Exit Code) input').val(), '0', 'Script Exit Code is 0');
-		//The below is commented until we can find a way to wait until the below external script has actually run.
-		//assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
+    });
+
+    andThen(function() {
+        //The below is commented until we can find a way to wait until the below external script has actually run.
+        //assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
         click('#logout');
     });
 
