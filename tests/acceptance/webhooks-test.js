@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { module, test } from 'qunit';
 import startApp from 'webhooks-tool/tests/helpers/start-app';
 /* global login */
+/* global pause */
 
 var application;
 
@@ -82,11 +83,22 @@ test('new webhook', function(assert) {
 });
 
 test('edit/view webhook',function(assert) {
+    var expectedInputType = {
+        Name: 'input',
+        'Hook Id': 'input',
+        'Event Filter': 'input',
+        'Script Path': 'input',
+        'Script Parameter': 'textarea',
+        Comments: 'textarea'
+    };
+
     var expectedData = {
         Name: 'Test Webhook',
         'Hook Id': '99be9bd2-0cf4-40b5-91d8-e8727457fa6a',
         'Event Filter': '.*',
-        Script: './tests/scripts/test.sh'
+        'Script Path': './tests/scripts/test.sh',
+        'Script Parameter': 'SCRIPT_PARAM',
+        Comments: ''
     };
 
     visit('/webhooks');
@@ -101,7 +113,7 @@ test('edit/view webhook',function(assert) {
         for(var field in expectedData) {
             var fieldRow = find('.row:contains(' + field + ')');
             assert.equal(fieldRow.length, 1, 'Page contains row for field: ' + field);
-            var fieldInput = find('input',fieldRow);
+            var fieldInput = find(expectedInputType[field],fieldRow);
             assert.equal(fieldInput.length, 1, 'Page contains input for field: ' + field);
             assert.equal(fieldInput.val(), expectedData[field], field + ' has correct value');
         }
@@ -178,7 +190,8 @@ test('test script', function(assert) {
             "some": {
                 "valid": "JSON"
             }
-        }
+        },
+        "scriptParam": "SCRIPT_PARAM"
     };
 
     var scriptInputWithServerInfo = {
@@ -194,7 +207,8 @@ test('test script', function(assert) {
             }
         },
         "apiToken": "TEST API TOKEN",
-        "minServer": "http://localhost:8081"
+        "minServer": "http://localhost:8081",
+        "scriptParam": "SCRIPT_PARAM"
     };
 
     visit('/webhook/kwTSK9dsQnOS1MVn');
@@ -235,13 +249,13 @@ test('test script', function(assert) {
     andThen(function() {
         assert.deepEqual(JSON.parse(find('.row:contains(Script Input) textarea').val()), scriptInputWithServerInfo, 'Script Input is correct');
         click('a.button:contains(Execute Script)');
+        pause(1000);
     });
 
     andThen(function() {
         assert.equal(find('.error').length, 0, 'No error messages shown');
         assert.equal(find('.row:contains(Script Exit Code) input').val(), '0', 'Script Exit Code is 0');
-		//The below is commented until we can find a way to wait until the below external script has actually run.
-		//assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
+		assert.deepEqual(JSON.parse(find('.row:contains(Script Output) textarea').val()),  {testSTDIN: scriptInputWithServerInfo }, 'Script Output is correct');
         click('#logout');
     });
 
@@ -267,7 +281,7 @@ test('webhook logs', function(assert) {
     andThen(function() {
         assert.equal(find('.row:contains(Test Log Entry) a.button:contains(Hide Details)').length, 1, 'Hide Details button is shown');
         assert.equal(find('.row:contains(this) span.postfix:contains(is)').length,1, "this: 'is' log entry detail shown");
-        assert.deepEqual(JSON.parse(find('.row:has(span.prefix:contains(a)) textarea').val()), { test: 'logEntry' }, 'Complex JSON log entry value is shown');
+        assert.deepEqual(JSON.parse(find('.row:has(span.prefix:contains(aaa)) textarea').val()), { test: 'logEntry' }, 'Complex JSON log entry value is shown');
         click('a.button:contains(Hide Details)');
     });
 

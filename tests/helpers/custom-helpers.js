@@ -34,6 +34,12 @@ var customHelpers = (function() {
 
     });
 
+    Ember.Test.registerAsyncHelper('pause', function(time) {
+        return new Ember.RSVP.Promise(function(resolve) {
+            setTimeout(resolve, time);
+        });
+    });
+
 })();
 
 export default customHelpers;
