@@ -4,120 +4,167 @@ var querystring = require('querystring');
 
 module.exports = {
 
-	/**
-	 * convert stdin to a json object and pass into the callback
-	 */
-	 handleStdinAsJson:function(callback){
-	 	var stdin = process.stdin;
-	 	var stdout = process.stdout;
-	 	var inputChunks = [];
+    extraLogging: false,
 
-	 	stdin.resume();
-	 	stdin.setEncoding('utf8');
-	 	stdin.on('data', function (chunk) { 
-	 		inputChunks.push(chunk); 
-	 	});
+    /**
+     * Log if extra logging.
+     */
+    log: function(s){
+        if(this.extraLogging){
+            console.log(s);
+        }
+    },
 
-	 	stdin.on('end', function () {
-	 		var inputJSON = inputChunks.join();
-	 		var parsedData = JSON.parse(inputJSON);
-	 		callback(parsedData);
-	 	});
-	 },
+    /**
+     * Convert stdin to a json object and pass into the callback.
+     */
+    doWithStdinJson: function(callback){
+        var self = this;
+        var stdin = process.stdin;
+        var inputChunks = [];
 
-	/**
-	 * opts = node request options plus xResponseCallBack, xBody, xLog
-	 * https://nodejs.org/api/http.html#http_http_request_options_callback
-	 */
-	 post:function(opts){
-	 	var req = http.request(opts, function(res) {
-	 		if(opts.xLog){console.log('STATUS: ' + res.statusCode);}
-	 		if(opts.xLog){console.log('HEADERS: ' + JSON.stringify(res.headers));}
+        stdin.resume();
+        stdin.setEncoding('utf8');
+        stdin.on('data', function (chunk) { 
+            inputChunks.push(chunk); 
+        });
 
-	 		res.setEncoding('utf8');
-	 		var allData = "";
+        stdin.on('end', function () {
+            var inputJSON = inputChunks.join("");
+            var parsedStdin = JSON.parse(inputJSON);
+            self.log("parsedStdin: " + JSON.stringify(parsedStdin));
+            callback(parsedStdin);
+        });
+    },
 
-	 		res.on('data', function (chunk) {
-	 			allData+=chunk;
-	 			if(opts.xLog){console.log('BODY: ' + chunk);}
-	 		});
+    /**
+     * Finds the value of the field in a form in a min project.
+     */
+    getFormFieldVal: function(stdinJsonObj, formName, fieldName){
+        var minProject = stdinJsonObj.payload.part;
+        if(!minProject.dataForms){
+            return null;
+        }
+        var formsFound = minProject.dataForms.filter(function(df){
+            return df.title === formName;
+        });
+        if(formsFound.length === 0){
+            return null;
+        }
+        return formsFound[0].fields[fieldName];
+    },
 
-	 		res.on('end', function() {
-	 			if(opts.xResponseCallBack){
-	 				opts.xResponseCallBack(allData);
-	 			}
-	 		});
-	 	});
+    /**
+     * Makes an http request.
+     * opts = node request options plus xResponseCallback, xBody
+     * https://nodejs.org/api/http.html#http_http_request_options_callback
+     */
+    httpRequest: function(opts){
+        var self = this;
+        var req = http.request(opts, function(responseObj) {
+            self.log('STATUS: ' + responseObj.statusCode);
+            self.log('HEADERS: ' + JSON.stringify(responseObj.headers));
 
-	 	req.on('error', function(e) {
-	 		throw e;
-	 	});
+            responseObj.setEncoding('utf8');
+            var responseBody = "";
 
-	 	if(opts.xBody){
-	 		req.write(opts.xBody);
-	 	}
-	 	req.end();
-	 },
+            responseObj.on('data', function (chunk) {
+                responseBody += chunk;
+                self.log('BODY: ' + chunk);
+            });
 
-	/**
-	 * sends min project changes back to the min server
-	 */
-	 updateMinProject:function(stdinJsonObj, project, responseCallBack){
-	 	var parsedUrl = url.parse(stdinJsonObj.minServer);
-		var body = querystring.stringify({
-			'project_json' : JSON.stringify(project)
-		});
+            responseObj.on('end', function() {
+                if(opts.xResponseCallback){
+                    opts.xResponseCallback(responseObj, responseBody);
+                }
+            });
+        });
 
-	 	var requestOptions = {
-	 		hostname: parsedUrl.hostname,
-	 		port: parsedUrl.port,
-	 		path: '/projectmanager/projectAPI/createOrUpdate?apiToken='+stdinJsonObj.apiToken,
-	 		method: 'POST',
-	 		headers: {
-	 			'Content-Type': 'application/x-www-form-urlencoded',
-			    'Content-Length': body.length
-			},
-			xResponseCallBack: responseCallBack,
-			xBody: body,
-			xLog: true
-		};
+        req.on('error', function(e) {
+            console.log("Unable to connect to server.");
+            throw e;
+        });
 
-		this.post(requestOptions);
-	},
+        if(opts.xBody){
+            req.write(opts.xBody);
+        }
+        req.end();
+    },
 
-	/**
-	 * adds project codes to the min project passed in
-	 */
-	 addProjectCodes:function(stdinJsonObj, projectCodes, responseCallBack){
-	 	var project = {
-			id: stdinJsonObj.payload.part.id,
-			projectCodes: projectCodes
-		};
-		this.updateMinProject(stdinJsonObj, project, responseCallBack);
-	},
+    /**
+     * Sends min project changes back to the min server.
+     */
+    updateMinProject: function(stdinJsonObj, project, responseCallback){
+        var parsedUrl = url.parse(stdinJsonObj.minServer);
+        var body = querystring.stringify({
+            'project_json' : JSON.stringify(project)
+        });
+        
+        if(!responseCallback){
+            responseCallback = function(responseObj, responseBody){
+                if(responseObj.statusCode === 200){
+                    var responseBodyObj = JSON.parse(responseBody);
+                    if(responseBodyObj.result && responseBodyObj.result.id){
+                        console.log("Successfully updated min project.");
+                    } else {
+                        console.log("Error from min: " + responseBody);
+                    }
+                } else {
+                    throw new Error("Unable to connect to min to update project.");
+                }
+            };
+        }
 
-	/**
-	 * sets the status of the min project passed in
-	 */
-	 setStatus:function(stdinJsonObj, newStatus, responseCallBack){
-	 	var project = {
-			id: stdinJsonObj.payload.part.id,
-			status: {
-				current: newStatus
-			}
-		};
-		this.updateMinProject(stdinJsonObj, project, responseCallBack);
-	},
+        var requestOptions = {
+            protocol: parsedUrl.protocol,
+            hostname: parsedUrl.hostname,
+            port: parsedUrl.port,
+            path: '/projectmanager/projectAPI/createOrUpdate?apiToken=' + stdinJsonObj.apiToken,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': body.length
+            },
+            xResponseCallback: responseCallback,
+            xBody: body
+        };
 
-	/**
-	 * adds log messages to the min project passed in
-	 */
-	 addLogMessage:function(stdinJsonObj, logMessages, responseCallBack){
-	 	var project = {
-			id: stdinJsonObj.payload.part.id,
-			logMessages: logMessages //TODO may need to update name of field based on the new api added
-		};
-		this.updateMinProject(stdinJsonObj, project, responseCallBack);
-	}
+        this.httpRequest(requestOptions);
+    },
+
+    /**
+     * Adds project codes to the min project passed in.
+     */
+    postProjectCodesBackToMin: function(stdinJsonObj, projectCodes, responseCallback){
+        var project = {
+            id: stdinJsonObj.payload.part.id,
+            projectCodes: projectCodes
+        };
+        this.updateMinProject(stdinJsonObj, project, responseCallback);
+    },
+
+    /**
+     * Sets the status of the min project passed in.
+     */
+    postStatusBackToMin: function(stdinJsonObj, newStatus, responseCallback){
+        var project = {
+            id: stdinJsonObj.payload.part.id,
+            status: {
+                current: newStatus
+            }
+        };
+        this.updateMinProject(stdinJsonObj, project, responseCallback);
+    },
+
+    /**
+     * Adds log messages to the min project passed in.
+     */
+    postLogMessagesBackToMin: function(stdinJsonObj, logMessages, responseCallback){
+        var project = {
+            id: stdinJsonObj.payload.part.id,
+            logMessages: logMessages
+        };
+        this.updateMinProject(stdinJsonObj, project, responseCallback);
+    }
 
 };

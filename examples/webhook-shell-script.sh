@@ -1,5 +1,5 @@
 #!/bin/bash
-#NOTE: this script must be executable: chmod +x webhook-script-example-1.sh
+#NOTE: this script must be executable: chmod +x script-file-name-here
 
 #args passed in
 echo "Webhook name: $1"
