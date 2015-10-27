@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from 'webhooks-tool/config/environment';
 
 //Wrap jQueries promise in a RVSP Promise since jQuery promises
 //are dumb
@@ -17,7 +18,7 @@ var resolveOnceRestart = function(instanceId, waitTime) {
             reject('Restart failed');
         } else {
             setTimeout(function() {
-                resolve(getJSON('/api/method/instanceId').then(function(data) {
+                resolve(getJSON(config.baseURL + 'api/method/instanceId').then(function(data) {
                     var newInstanceId = data.instanceId;
                     if (newInstanceId === instanceId) {
                         return resolveOnceRestart(instanceId, waitTime * 2);
@@ -34,7 +35,7 @@ var resolveOnceRestart = function(instanceId, waitTime) {
 
 export default Ember.Mixin.create({
     restart: function() {
-        return getJSON('/api/method/restart').then(function(response) {
+        return getJSON(config.baseURL + 'api/method/restart').then(function(response) {
             var instanceId = response.instanceId;
             return resolveOnceRestart(instanceId, 100);
         });

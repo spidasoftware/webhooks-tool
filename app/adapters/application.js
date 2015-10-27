@@ -1,7 +1,8 @@
 import DS from 'ember-data';
+import config from 'webhooks-tool/config/environment';
 
 export default DS.RESTAdapter.extend({
-    namespace: '/api',
+    namespace: config.baseURL + 'api',
     coalesceFindRequests: true,
     findMany: function(store, type, ids) {
         return this.ajax(this.buildURL(type.modelName), 'GET', { data: { ids: JSON.stringify(ids) } });

@@ -92,8 +92,9 @@ Click 'New' to create a new webhook.
 * Hook Id -- The SPIDAMin Hook Id for this webhook.  (Set by SPIDAMin and uneditable).
 * Channel -- The channel on which to listen for events.
 * Event Filter -- A regular expresssion that will be used to determine if this webhook matches an event.
-* Script -- The path to be executed by the Webhooks Tool when it recieves a callback for this webhook from SPIDAMin.
+* Script Path -- The path to be executed by the Webhooks Tool when it recieves a callback for this webhook from SPIDAMin.
 * Expires -- The time when this webhook will expire.  (It will be autorenewed by the webhook tool before this happens.)
+* Script Parameter -- This parameter will be included in the JSON passed to the executed script as scriptParam.  This can be used to pass environment specific configuration details to the script.
 * Comments -- Any additional comments relating to this webhook.
 
 ![Testing an event filter](doc/testEventFilter.png)

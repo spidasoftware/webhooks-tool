@@ -17,8 +17,13 @@ var initialConfig = {
     leaseLeadTime: 24 * 60 * 60, //One day
     logScriptOut: false,
     logCallbackData: false,
-    passServerInfo: true
+    passServerInfo: true,
+    minBaseUrl: process.env.WEBHOOK_MIN_BASE_URL,
+    externalServerUrl: process.env.WEBHOOK_SERVER_URL,
+    apiToken: process.env.WEBHOOK_MIN_API_TOKEN
 };
+
+
 
 //Keep these around when replacing config
 var methods = ['write','reload','replace'];
@@ -47,6 +52,14 @@ module.exports = function(dataPath) {
         });
     };
 
+    var normalizeURL = function(url) {
+        if (url && url !== '' && url.substr(-1) !== '/') {
+            return url + '/';
+        } else {
+            return url;
+        }
+    };
+
     //Replace config
     var replace = function(newConfig) {
         var key;
@@ -57,7 +70,14 @@ module.exports = function(dataPath) {
         }
 
         for(key in newConfig) {
-            this[key] = newConfig[key];
+            var newVal = newConfig[key];  
+
+            //If last 3 chars of key is url normalize it
+            if (key.substr(-3).toLowerCase() === 'url') {
+                newVal = normalizeURL(newVal);
+            }
+
+            this[key] = newVal;
         }
 
         return this.write();
@@ -68,6 +88,12 @@ module.exports = function(dataPath) {
     try {
         //Try to load config from disk
         config = JSON.parse(fs.readFileSync(configPath));
+
+        for(key in config) {
+            if (key.substr(-3).toLowerCase() === 'url') {
+                config[key] = normalizeURL(config[key]);
+            }
+        }
     } catch (openConfigException) {
         //Create defualt if it doesn't exist
         log.warn('Could not open ' + configPath + '. Assuming new install.');

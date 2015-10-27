@@ -2,10 +2,10 @@
   <div class="small-4 columns"><span class="prefix">Export</span></div>
   <div class="small-8 columns">
     <ul class="button-group">
-      <li><a class="postfix button" href="/api/method/export/config" download>Config</a></li>
-      <li><a class="postfix button" href="/api/method/export/users" download>Users</a></li>
-      <li><a class="postfix button" href="/api/method/export/webhooks" download>Webhooks</a></li>
-      <li><a class="postfix button" href="/api/method/export/everything" download>Everything</a></li>
+      <li><a class="postfix button" href="{{baseUrl}}api/method/export/config" download>Config</a></li>
+      <li><a class="postfix button" href="{{baseUrl}}api/method/export/users" download>Users</a></li>
+      <li><a class="postfix button" href="{{baseUrl}}api/method/export/webhooks" download>Webhooks</a></li>
+      <li><a class="postfix button" href="{{baseUrl}}api/method/export/everything" download>Everything</a></li>
     </ul>
   </div>
 </div>
@@ -44,7 +44,7 @@
         <a class="small button" {{action 'restart'}}>Restart</a>
       </li>
       <li>
-        <a class="small button" href="/api/method/logs" download>Download Logs</a>
+        <a class="small button" href="{{baseUrl}}api/method/logs" download>Download Logs</a>
       </li>
     </ul>
   </div>

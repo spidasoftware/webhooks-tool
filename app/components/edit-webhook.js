@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import ArrayPager from 'webhooks-tool/mixins/array-pager';
+import config from 'webhooks-tool/config/environment';
 
 export default Ember.Component.extend(ArrayPager,{
     channels: ['Project','Status','Form','File','Tag','Action'],
@@ -50,7 +51,8 @@ export default Ember.Component.extend(ArrayPager,{
             hookId: this.get('webhook.hookId'),
             channel: this.get('webhook.channel'),
             eventName: this.get('testEventName'),
-            payload: this.get('parsedPayload')
+            payload: this.get('parsedPayload'),
+            scriptParam: this.get('webhook.scriptParam')
         };
 
         if (this.get('sendServerInfo')) {
@@ -59,7 +61,7 @@ export default Ember.Component.extend(ArrayPager,{
         }
 
         return JSON.stringify(scriptInput);
-    }.property('parsedPayload','testEventName','webhook.hookId','webhook.channel','webhook.name','webhook.eventFilter','sendServerInfo','apiToken','minServer'),
+    }.property('parsedPayload','testEventName','webhook.hookId','webhook.channel','webhook.name','webhook.eventFilter','sendServerInfo','apiToken','minServer','webhook.scriptParam'),
 
     //This is the logEntries in webhook.log.logEntries in reverse order
     contentToPage: function() {
@@ -84,7 +86,7 @@ export default Ember.Component.extend(ArrayPager,{
             this.set('scriptOutput','');
 
             var self=this;
-            Ember.$.ajax('/api/method/testScript', {
+            Ember.$.ajax(config.baseURL + 'api/method/testScript', {
                 contentType: 'application/json',
                 processData: false,
                 data: JSON.stringify({
