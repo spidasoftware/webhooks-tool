@@ -39,6 +39,7 @@ var callbackHandler = {
                     var callbackData = req.body
                     callbackData.name = hook.name;
                     callbackData.eventFilter = hook.eventFilter;
+                    callbackData.scriptParam = hook.scriptParam;
                     if (self.config.passServerInfo) {
                         callbackData.apiToken = self.config.apiToken;
                         callbackData.minServer = self.config.minBaseUrl;

@@ -9,5 +9,6 @@ export default DS.Model.extend({
     eventFilter: DS.attr('string'),
     channel: DS.attr('string'),
     enabled: DS.attr('boolean'),
+    scriptParam: DS.attr('string'),
     log: DS.belongsTo('log', {async: true})
 });

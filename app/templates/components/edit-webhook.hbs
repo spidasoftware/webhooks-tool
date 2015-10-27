@@ -63,7 +63,7 @@
 {{/if}}
 <div class="row collapse">
   <div class="small-4 columns">
-    <span class="prefix">Script</span>
+    <span class="prefix">Script Path</span>
   </div>
   <div class="small-7 columns">
     {{input type="text" value=webhook.script}}
@@ -163,6 +163,14 @@
   </div>
   <div class="small-8 columns">
     {{live-moment value=webhook.leaseEnd format='calendar'}}
+  </div>
+</div>
+<div class="row collapse">
+  <div class="small-4 columns">
+    <span class="prefix">Script Parameter</span>
+  </div>
+  <div class="small-8 columns">
+    {{textarea value=webhook.scriptParam rows=3}}
   </div>
 </div>
 <div class="row collapse">
