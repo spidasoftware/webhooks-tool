@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from 'webhooks-tool/config/environment';
 
 export default Ember.Component.extend({
 
@@ -34,7 +35,7 @@ export default Ember.Component.extend({
             var self = this;
 
             this.sendAction('startWorking','Resetting password...');
-            Ember.$.ajax('/api/method/resetPassword',{
+            Ember.$.ajax(config.baseURL + 'api/method/resetPassword',{
                 contentType: 'application/json',
                 method: 'POST',
                 data: JSON.stringify({

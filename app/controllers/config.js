@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Restart from 'webhooks-tool/mixins/restart';
+import config from 'webhooks-tool/config/environment';
 
 var propertyMap = [
     {
@@ -154,7 +155,7 @@ export default Ember.Controller.extend(Restart,{
 
             this.send('startWorking','Saving config...');
             Ember.$.ajax({
-                url: '/api/config',
+                url: config.baseURL + 'api/config',
                 data: JSON.stringify(this.get('model')),
                 method: 'POST',
                 processData: false,

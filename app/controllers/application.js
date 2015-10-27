@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import config from 'webhooks-tool/config/environment';
+
 
 var LOGOUT_GRACE = 5 * 60 * 1000; //5 Minutes
 
@@ -58,7 +60,7 @@ export default Ember.Controller.extend({
             var self = this;
 
             this.set('showInvalidPasswordMessage',false);
-            Ember.$.ajax('/login', {
+            Ember.$.ajax(config.baseURL + 'login', {
                 contentType: 'application/json',
                 method: 'post',
                 data: JSON.stringify({
@@ -93,7 +95,7 @@ export default Ember.Controller.extend({
         },
 
         logout: function() {
-            Ember.$.get('/logout');
+            Ember.$.get(config.baseURL + 'logout');
             this.set('willBeLoggedOut', false);
             this.set('isLoggedIn',false);
             this.send('stopWorking');
@@ -104,7 +106,7 @@ export default Ember.Controller.extend({
             this.send('startWorking', 'Renewing login...');
 
             var self = this;
-            Ember.$.ajax('/renewLogin', {dataType: 'json'}).then(function(response) {
+            Ember.$.ajax(config.baseURL + 'renewLogin', {dataType: 'json'}).then(function(response) {
                 Ember.run(function() {
                     if (response.success) {
                         self.set('model.login',Ember.Object.create(response.login));
