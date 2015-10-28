@@ -1,4 +1,4 @@
-hookAPI = require("../src/hookAPI")
+var hookAPI = require("../src/hookAPI")
 
 
 describe('hookAPI', function() {

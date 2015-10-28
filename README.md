@@ -123,6 +123,8 @@ Additionally, if the "Pass Server Info to Script" configuration option is select
 
 [Example Scripts](examples)
 
+[SPIDA Webhook Script NPM Module](https://github.com/spidasoftware/spida-webhook-lib)
+
 ## Admin
 
 ![Admin Page](doc/admin.png)
