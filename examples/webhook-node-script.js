@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //NOTE: this script must be executable: chmod +x script-file-name-here
-var whs = require('../script-libs/webhook-script.js');
+var whs = require('../script-libs/webhook-tools.js');
 
 whs.doWithStdinJson(function(stdinJsonObj){
 

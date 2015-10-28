@@ -1,7 +1,7 @@
 var url = require('url');
 var http = require('http');
 var querystring = require('querystring');
-var whs = require("../script-libs/webhook-script")
+var whs = require("../script-libs/webhook-tools")
 
 var originalStdin = process.stdin;
 var originalHttpRequest = whs.httpRequest;
@@ -12,29 +12,29 @@ var reset = function(){
    whs.updateMinProject = originalUpdateMinProject;
 };
 
-describe('webhook-script', function() {
+describe('webhook-tools', function() {
     afterEach(reset);
     beforeEach(reset);
 
-    it('log extraLogging = true', function() {
+    it('debugLog enableDebugLog = true', function() {
         //setup
         spyOn(console, 'log');
-        whs.extraLogging = true;
+        whs.enableDebugLog = true;
         
         //when
-        whs.log();
+        whs.debugLog('test');
 
         //then
         expect(console.log).toHaveBeenCalled();
     });
 
-    it('log extraLogging = false', function() {
+    it('debugLog enableDebugLog = false', function() {
         //setup
         spyOn(console, 'log');
-        whs.extraLogging = false;
+        whs.enableDebugLog = false;
         
         //when
-        whs.log();
+        whs.debugLog('test');
         
         //then
         expect(console.log).not.toHaveBeenCalled();
@@ -65,7 +65,7 @@ describe('webhook-script', function() {
         expect(done).toHaveBeenCalledWith(JSON.parse('{}'));
     });
 
-    it('getFormFieldVal valid', function() {
+    it('getForm and getFormFieldVal', function() {
         //setup
         var stdinJsonObj = {
             payload:{
@@ -200,17 +200,17 @@ describe('webhook-script', function() {
         expect(whs.updateMinProject).toHaveBeenCalled();
     });
 
-    it('postLogMessagesBackToMin', function() {
+    it('postLogMessageBackToMin', function() {
         //setup
-        var stdinJsonObj = {payload:{part:{id:1}}};
-        var logMessages = [{value:"123"}];
-        spyOn(whs, 'updateMinProject').andCallFake(function(){});
+        var stdinJsonObj = {payload:{part:{id:1}}, minServer:"http://test/test"};
+        var logMessage = {trigger:"test", message:"test", success:true, date:new Date().getTime()};
+        spyOn(whs, 'httpRequest').andCallFake(function(){});
         
         //when
-        whs.postLogMessagesBackToMin(stdinJsonObj, logMessages);
+        whs.postLogMessageBackToMin(stdinJsonObj, logMessage);
         
         //then
-        expect(whs.updateMinProject).toHaveBeenCalled();
+        expect(whs.httpRequest).toHaveBeenCalled();
     });
 
 });
