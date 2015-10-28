@@ -1,8 +1,15 @@
 #!/usr/bin/env node
-//NOTE: this script must be executable: chmod +x script-file-name-here
-var whs = require('../script-libs/webhook-tools.js');
+/******************************************************************************
+ * This is a node webhook example.  When it is triggered, 
+ * it will simply post the min project to another server.
+ * 
+ * NOTE: this script must be executable: chmod +x script-file-name-here 
+ * NOTE: npm install spida-webhook-lib or add to package.json
+ * 
+ ******************************************************************************/
+var webhook = require("spida-webhook-lib");
 
-whs.doWithStdinJson(function(stdinJsonObj){
+webhook.doWithStdinJson(function(stdinJsonObj){
 
     //log some data passed into this script
     var spidaminProject = stdinJsonObj.payload.part;
@@ -17,7 +24,7 @@ whs.doWithStdinJson(function(stdinJsonObj){
     });
 
     //post spida project to another server
-    whs.httpRequest({
+    webhook.httpRequest({
         protocol: 'http:'
         hostname: 'my.other.server',
         port: 8080,

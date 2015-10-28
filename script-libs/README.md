@@ -1,1 +1,0 @@
-The files in this directory are helpful utilities that can be required in your own scripts.
