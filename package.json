@@ -25,7 +25,11 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "SPIDASoftware",
+  "author": {
+    "name": "SPIDA Developer",
+    "email": "developer@spidasoftware.com",
+    "url": "http://spidasoftware.com/"
+  },
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.2",
