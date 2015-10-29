@@ -1,5 +1,7 @@
 # Webhooks Tool
 
+[![Build Status](https://travis-ci.org/spidasoftware/webhooks-tool.svg?branch=master)](https://travis-ci.org/spidasoftware/webhooks-tool)
+
 The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAMin events.  This application will connect to a running SPIDAMin application using the Webhook API.  It will maintain a set of active webhooks, and trigger scripts whenever a webhook callback is received.
 
 See the [SPIDAMin WebhookAPI Documentation](https://github.com/spidasoftware/schema/blob/master/doc/apis/webhookAPI.md) for more information on using webhooks with SPIDAMin.
