@@ -276,12 +276,11 @@ test('webhook logs', function(assert) {
     login(assert);
 
     andThen(function() {
-        assert.equal(find('a.button:contains(Show Logs)').length, 1, 'Show logs button exists');
-        click('a.button:contains(Show Logs)');
+        assert.equal(find('a:contains(Logs)').length, 1, 'Logs tab exists');
+        click('a:contains(Logs)');
     });
 
     andThen(function() {
-        assert.equal(find('a.button:contains(Hide Logs)').length, 1, 'Hide logs button exists');
         assert.equal(find('.row:contains(Test Log Entry) div:contains(7/24/2015)').length, 1, 'Date field is shown');
         assert.equal(find('.row:contains(Test Log Entry) a.button:contains(Show Details)').length, 1, 'Show Details button is shown');
         click('.row:contains(Test Log Entry) a.button:contains(Show Details)');
@@ -296,12 +295,6 @@ test('webhook logs', function(assert) {
 
     andThen(function() {
         assert.equal(find('.row:contains(this) span.postfix:contains(is)').length,0, "this: 'is' log entry detail not shown");
-        click('a.button:contains(Hide Logs)');
-    });
-
-    andThen(function() {
-        assert.equal(find('.row:contains(Test Log Entry)').length, 0, 'Test log entry is not shown');
-        click('#logout'); 
     });
 
 });
