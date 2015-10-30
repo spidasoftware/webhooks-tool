@@ -33,8 +33,8 @@ export default Ember.Component.extend(ArrayPager,{
 
     didInsertElement: function() {
         var self = this;
-        $(document).foundation();
-        $('.tab-title.logs').on('click', function (event) {
+        Ember.$(document).foundation();
+        Ember.$('.tab-title.logs').on('click', function () {
             self.set('showingLogs', true);
         });
     },
