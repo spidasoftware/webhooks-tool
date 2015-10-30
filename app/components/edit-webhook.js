@@ -31,6 +31,14 @@ export default Ember.Component.extend(ArrayPager,{
         return new RegExp('^' + eventFilter + '$');
     }.property('webhook.eventFilter'),
 
+    didInsertElement: function() {
+        var self = this;
+        $(document).foundation();
+        $('.tab-title.logs').on('click', function (event) {
+            self.set('showingLogs', true);
+        });
+    },
+
     payloadInvalid: function() {
         var parsedPayload={};
         var payloadInvalid = true;
