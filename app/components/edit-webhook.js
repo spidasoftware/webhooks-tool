@@ -73,11 +73,16 @@ export default Ember.Component.extend(ArrayPager,{
 
     //This is the logEntries in webhook.log.logEntries in reverse order
     contentToPage: function() {
-        return DS.PromiseArray.create({
-            promise: this.get('webhook.log.logEntries').then(function(logEntries) {
-                return logEntries.toArray().reverse();
-            })
-        });
+        var logEntries = this.get('webhook.log.logEntries');
+        if(logEntries){
+            return DS.PromiseArray.create({
+                promise: logEntries.then(function(logEntries) {
+                    return logEntries.toArray().reverse();
+                })
+            });
+        } else {
+            return [];
+        }
     }.property('webhook.log.logEntries'),
 
     actions: {
