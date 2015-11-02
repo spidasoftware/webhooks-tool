@@ -287,14 +287,8 @@ test('webhook logs', function(assert) {
     });
 
     andThen(function() {
-        assert.equal(find('.row:contains(Test Log Entry) a.button:contains(Hide Details)').length, 1, 'Hide Details button is shown');
         assert.equal(find('.row:contains(this) span.postfix:contains(is)').length,1, "this: 'is' log entry detail shown");
         assert.deepEqual(JSON.parse(find('.row:has(span.prefix:contains(aaa)) textarea').val()), { test: 'logEntry' }, 'Complex JSON log entry value is shown');
-        click('a.button:contains(Hide Details)');
-    });
-
-    andThen(function() {
-        assert.equal(find('.row:contains(this) span.postfix:contains(is)').length,0, "this: 'is' log entry detail not shown");
     });
 
 });
