@@ -1,4 +1,15 @@
 <div class="row collapse">
+  <div class="small-12 columns">
+    <ul class="tabs" data-tab>
+      <li class="tab-title active"><a href="#panel1">Edit</a></li>
+      <li class="tab-title logs"><a href="#panel2">Logs</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="tabs-content">
+  <div class="content active" id="panel1">
+<div class="row collapse">
   <div class="small-4 columns">
     <span class="prefix">Name</span>
   </div>
@@ -182,14 +193,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="small-6 columns">
-    <ul class="button-group left">
-      <li>
-        <a class="small button" {{action 'toggleLogs'}}>{{if showingLogs 'Hide Logs' 'Show Logs'}}</a>
-      </li>
-    </ul>
-  </div>
-  <div class="small-6 columns">
+  <div class="small-12 columns">
     <ul class="button-group right">
       <li>
         {{#foundation-button enabled=webhook.isDirty action='save'}}
@@ -204,14 +208,19 @@
     </ul>
   </div>
 </div>
-{{#if showingLogs}}
-  <hr/>
-  {{#each pagedContent as |logEntry|}}
-    {{log-entry logEntry=logEntry}}
-  {{/each}}
-  <div class="row">
-    <div class="small-centered-4 columns">
-      {{foundation-pagination currentPage=page totalPageCount=totalPages}}
-    </div>
   </div>
-{{/if}}
+  <div class="content" id="panel2">
+    {{#if showingLogs}}
+      {{#each pagedContent as |logEntry|}}
+        {{log-entry logEntry=logEntry}}
+      {{/each}}
+      <div class="row">
+        <div class="small-centered-4 columns">
+          {{foundation-pagination currentPage=page totalPageCount=totalPages}}
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+
