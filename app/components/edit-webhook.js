@@ -32,11 +32,9 @@ export default Ember.Component.extend(ArrayPager,{
     }.property('webhook.eventFilter'),
 
     didInsertElement: function() {
-        var self = this;
         Ember.$(document).foundation();
-        Ember.$('.tab-title.logs').on('click', function () {
-            self.set('showingLogs', true);
-        });
+        if(window.location.hash === "#logs"){ this.set('showingLogs', true); }
+        Ember.$('.tab-title.logs').on('click', () => this.set('showingLogs', true));
     },
 
     payloadInvalid: function() {

@@ -1,215 +1,215 @@
 <div class="row collapse">
   <div class="small-12 columns">
-    <ul class="tabs" data-tab>
-      <li class="tab-title active"><a href="#panel1">Edit</a></li>
-      <li class="tab-title logs"><a href="#panel2">Logs</a></li>
+    <ul class="tabs" data-tab data-options="deep_linking:true">
+      <li class="tab-title active"><a href="#edit">Edit</a></li>
+      <li class="tab-title logs"><a href="#logs">Logs</a></li>
     </ul>
   </div>
 </div>
 
 <div class="tabs-content">
-  <div class="content active" id="panel1">
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Name</span>
-  </div>
-  <div class="small-8 columns">
-      {{input type='text' value=webhook.name}}
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Enabled</span>
-  </div>
-  <div class="small-8 columns">
-    <div class="switch radius">
-      {{input type="checkbox" checked=webhook.enabled elementId='enabledCheck'}}
-      <label for='enabledCheck'></label>
-    </div>
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Hook Id</span>
-  </div>
-  <div class="small-8 columns">
-    {{input type="text" disabled=true value=webhook.hookId}}
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Channel</span>
-  </div>
-  <div class="small-8 columns">
-    {{x-select content=channels value=webhook.channel}}
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Event Filter</span>
-  </div>
-  <div class="small-7 columns">
-    {{input type="text" value=webhook.eventFilter}}
-  </div>
-  <div class="small-1 columns">
-    <a class="postfix button" {{action 'testFilter'}}>Test</a>
-  </div>
-</div>
-{{#if isTestingFilter}}
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Test Event Name</span>
-    </div>
-    <div class="small-6 columns">
-      {{input type="text" value=testEventName}}
-    </div>
-    <div class="small-1 columns">
-      {{#if filterMatches}}
-        <span class="inline matches">Matches</span>
-      {{else}}
-        <span class="inline noMatch">No Match</span>
-      {{/if}}
-    </div>
-  </div>
-{{/if}}
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Script Path</span>
-  </div>
-  <div class="small-7 columns">
-    {{input type="text" value=webhook.script}}
-  </div>
-  <div class="small-1 columns">
-    <a class="postfix button" {{action 'toggleTestScript'}}>Test</a>
-  </div>
-</div>
-{{#if isTestingScript}}
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Test Event Name</span>
-    </div>
-    <div class="small-7 columns">
-      {{input type="text" value=testEventName}}
-    </div>
-  </div>
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Test Payload</span>
-    </div>
-    <div class="small-7 columns {{if payloadInvalid 'error'}}">
-        {{textarea value=scriptPayload}}
-        {{#if payloadInvalid}}
-          <span class="error">Invalid JSON</span>
-        {{/if}}
-    </div>
-  </div>
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns"><span class="prefix">Send Server Info</span></div>
-    <div class="small-7 columns">
-      <div class="switch radius">
-        {{input type="checkbox" checked=sendServerInfo elementId='sendServerInfo'}}
-        <label for="sendServerInfo"></label>
-      </div>
-    </div>
-  </div>
-  {{#if sendServerInfo}}
+  <div class="content active" id="edit">
     <div class="row collapse">
-      <div class="small-4 small-offset-1 columns">
-        <span class="prefix">API Token</span>
+      <div class="small-4 columns">
+        <span class="prefix">Name</span>
       </div>
-      <div class="small-7 columns">
-        {{input type='text' value=apiToken}}
+      <div class="small-8 columns">
+          {{input type='text' value=webhook.name}}
       </div>
     </div>
     <div class="row collapse">
-      <div class="small-4 small-offset-1 columns">
-        <span class="prefix">SPIDAMin Server</span>
+      <div class="small-4 columns">
+        <span class="prefix">Enabled</span>
+      </div>
+      <div class="small-8 columns">
+        <div class="switch radius">
+          {{input type="checkbox" checked=webhook.enabled elementId='enabledCheck'}}
+          <label for='enabledCheck'></label>
+        </div>
+      </div>
+    </div>
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Hook Id</span>
+      </div>
+      <div class="small-8 columns">
+        {{input type="text" disabled=true value=webhook.hookId}}
+      </div>
+    </div>
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Channel</span>
+      </div>
+      <div class="small-8 columns">
+        {{x-select content=channels value=webhook.channel}}
+      </div>
+    </div>
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Event Filter</span>
       </div>
       <div class="small-7 columns">
-        {{input type='text' value=minServer}}
+        {{input type="text" value=webhook.eventFilter}}
+      </div>
+      <div class="small-1 columns">
+        <a class="postfix button" {{action 'testFilter'}}>Test</a>
       </div>
     </div>
-  {{/if}}
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Script Input</span>
+    {{#if isTestingFilter}}
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Test Event Name</span>
+        </div>
+        <div class="small-6 columns">
+          {{input type="text" value=testEventName}}
+        </div>
+        <div class="small-1 columns">
+          {{#if filterMatches}}
+            <span class="inline matches">Matches</span>
+          {{else}}
+            <span class="inline noMatch">No Match</span>
+          {{/if}}
+        </div>
+      </div>
+    {{/if}}
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Script Path</span>
+      </div>
+      <div class="small-7 columns">
+        {{input type="text" value=webhook.script}}
+      </div>
+      <div class="small-1 columns">
+        <a class="postfix button" {{action 'toggleTestScript'}}>Test</a>
+      </div>
     </div>
-    <div class="small-7 columns">
-      {{textarea disabled=true value=scriptInput}}
-    </div>
-  </div>
-  <div class="row">
-    <div class="small-8 columns">
-      {{#if scriptRunning}}
-        Running...
+    {{#if isTestingScript}}
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Test Event Name</span>
+        </div>
+        <div class="small-7 columns">
+          {{input type="text" value=testEventName}}
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Test Payload</span>
+        </div>
+        <div class="small-7 columns {{if payloadInvalid 'error'}}">
+            {{textarea value=scriptPayload}}
+            {{#if payloadInvalid}}
+              <span class="error">Invalid JSON</span>
+            {{/if}}
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns"><span class="prefix">Send Server Info</span></div>
+        <div class="small-7 columns">
+          <div class="switch radius">
+            {{input type="checkbox" checked=sendServerInfo elementId='sendServerInfo'}}
+            <label for="sendServerInfo"></label>
+          </div>
+        </div>
+      </div>
+      {{#if sendServerInfo}}
+        <div class="row collapse">
+          <div class="small-4 small-offset-1 columns">
+            <span class="prefix">API Token</span>
+          </div>
+          <div class="small-7 columns">
+            {{input type='text' value=apiToken}}
+          </div>
+        </div>
+        <div class="row collapse">
+          <div class="small-4 small-offset-1 columns">
+            <span class="prefix">SPIDAMin Server</span>
+          </div>
+          <div class="small-7 columns">
+            {{input type='text' value=minServer}}
+          </div>
+        </div>
       {{/if}}
-      {{#if scriptError}}
-        <span class="error"> {{scriptErrorMessage}} </span>
-      {{/if}}
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Script Input</span>
+        </div>
+        <div class="small-7 columns">
+          {{textarea disabled=true value=scriptInput}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-8 columns">
+          {{#if scriptRunning}}
+            Running...
+          {{/if}}
+          {{#if scriptError}}
+            <span class="error"> {{scriptErrorMessage}} </span>
+          {{/if}}
+        </div>
+        <div class="small-4 columns">
+          <a class="small right button" {{action 'testScript'}}>Execute Script</a>
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Script Exit Code</span>
+        </div>
+        <div class="small-7 columns">
+          {{input disabled=true type="text" value=scriptExitCode}}
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-4 small-offset-1 columns">
+          <span class="prefix">Script Output</span>
+        </div>
+        <div class="small-7 columns">
+          {{textarea disabled=true value=scriptOutput}}
+        </div>
+      </div>
+    {{/if}}
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Expires</span>
+      </div>
+      <div class="small-8 columns">
+        {{live-moment value=webhook.leaseEnd format='calendar'}}
+      </div>
     </div>
-    <div class="small-4 columns">
-      <a class="small right button" {{action 'testScript'}}>Execute Script</a>
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Script Parameter</span>
+      </div>
+      <div class="small-8 columns">
+        {{textarea value=webhook.scriptParam rows=3}}
+      </div>
+    </div>
+    <div class="row collapse">
+      <div class="small-4 columns">
+        <span class="prefix">Comments</span>
+      </div>
+      <div class="small-8 columns">
+        {{textarea value=webhook.comment}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <ul class="button-group right">
+          <li>
+            {{#foundation-button enabled=webhook.isDirty action='save'}}
+                Save
+            {{/foundation-button}}
+          </li>
+          <li>
+            {{#foundation-button action='cancel'}}
+                Cancel
+            {{/foundation-button}}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Script Exit Code</span>
-    </div>
-    <div class="small-7 columns">
-      {{input disabled=true type="text" value=scriptExitCode}}
-    </div>
-  </div>
-  <div class="row collapse">
-    <div class="small-4 small-offset-1 columns">
-      <span class="prefix">Script Output</span>
-    </div>
-    <div class="small-7 columns">
-      {{textarea disabled=true value=scriptOutput}}
-    </div>
-  </div>
-{{/if}}
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Expires</span>
-  </div>
-  <div class="small-8 columns">
-    {{live-moment value=webhook.leaseEnd format='calendar'}}
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Script Parameter</span>
-  </div>
-  <div class="small-8 columns">
-    {{textarea value=webhook.scriptParam rows=3}}
-  </div>
-</div>
-<div class="row collapse">
-  <div class="small-4 columns">
-    <span class="prefix">Comments</span>
-  </div>
-  <div class="small-8 columns">
-    {{textarea value=webhook.comment}}
-  </div>
-</div>
-<div class="row">
-  <div class="small-12 columns">
-    <ul class="button-group right">
-      <li>
-        {{#foundation-button enabled=webhook.isDirty action='save'}}
-            Save
-        {{/foundation-button}}
-      </li>
-      <li>
-        {{#foundation-button action='cancel'}}
-            Cancel
-        {{/foundation-button}}
-      </li>
-    </ul>
-  </div>
-</div>
-  </div>
-  <div class="content" id="panel2">
+  <div class="content" id="logs">
     {{#if showingLogs}}
       {{#each pagedContent as |logEntry|}}
         {{log-entry logEntry=logEntry}}
