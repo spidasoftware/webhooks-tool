@@ -28,15 +28,17 @@ export default Ember.Component.extend(ArrayPager,{
     testRegExp: function() {
         var eventFilter = this.get('webhook.eventFilter');
 
+        // NOTE: Difference in the way Java matches regex vs. Javascript.  
+        // When java does the match the regex must match the entire string, 
+        // but javascript will match on only a substring.  So, ^ and $ are 
+        // added to force javascript regexps to work like Java. 
         return new RegExp('^' + eventFilter + '$');
     }.property('webhook.eventFilter'),
 
     didInsertElement: function() {
-        var self = this;
         Ember.$(document).foundation();
-        Ember.$('.tab-title.logs').on('click', function () {
-            self.set('showingLogs', true);
-        });
+        if(window.location.hash === "#logs"){ this.set('showingLogs', true); }
+        Ember.$('.tab-title.logs').on('click', () => this.set('showingLogs', true));
     },
 
     payloadInvalid: function() {
