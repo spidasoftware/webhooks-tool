@@ -35,7 +35,7 @@ webhook.doWithStdinJson(function(stdinJsonObj){
             'Content-Length': body.length
         },
         xBody: body,
-        xResponseCallback: function(response, body){
+        xResponseHandler: function(response, body){
             //handle the response from the other server
             console.log("response statusCode: " + response.statusCode);
             console.log("response body: " + body);
