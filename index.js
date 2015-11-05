@@ -21,7 +21,7 @@ var webhookDB = require('./src/db');
 var web = require('./src/web');
 var log = require('./src/logger').main;
 
-var stopServer;  //Returned from web module, used to stop server when SIGINT is recieved
+var stopServer;  //Returned from web module, used to stop server when SIGINT is received
 
 try {
     //Load DB

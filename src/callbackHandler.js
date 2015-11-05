@@ -25,7 +25,7 @@ var callbackHandler = {
         this.db.getHookByHookId(req.body.hookId).then(function(hook) {
             if (hook) {
                 req.log.debug({hook: hook}, 'Found matching hook');
-                var loggingPromise = self.db.addLogEntry(hook.log, 'Callback recieved', { 
+                var loggingPromise = self.db.addLogEntry(hook.log, 'Callback received', { 
                     event: req.body.eventName,
                     enabled: hook.enabled,
                     script: hook.script
@@ -58,7 +58,7 @@ var callbackHandler = {
                     });
                 }
             } else {
-                req.log.warn('Recieved callback for hook ' + req.body.hookId + ', but I do not know about that hook');
+                req.log.warn('Received callback for hook ' + req.body.hookId + ', but I do not know about that hook');
             }
         });
     },
