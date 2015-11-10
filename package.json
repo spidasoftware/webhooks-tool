@@ -59,7 +59,8 @@
     "grunt-exec": "^0.4.6",
     "grunt-parallel": "^0.4.1",
     "grunt-supervisor": "^0.2.4",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "rewire": "^2.4.0"
   },
   "dependencies": {
     "bluebird": "^2.9.33",

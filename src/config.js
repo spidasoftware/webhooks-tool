@@ -2,8 +2,9 @@
 //Handles application configuration
 
 var Promise = require('bluebird');
-var fs=Promise.promisifyAll(require('fs'));
+var fs = Promise.promisifyAll(require('fs'));
 var log = require('./logger').config;
+var normalizeURL = require('./utils').normalizeURL;
 var mkdirp = require('mkdirp');
 
 //Default config loaded when application is first started
@@ -50,14 +51,6 @@ module.exports = function(dataPath) {
             this.replace(JSON.parse(file));
             return this;
         });
-    };
-
-    var normalizeURL = function(url) {
-        if (url && url !== '' && url.substr(-1) !== '/') {
-            return url + '/';
-        } else {
-            return url;
-        }
     };
 
     //Replace config
