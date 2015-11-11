@@ -45,11 +45,11 @@ var callbackHandler = {
 
                 if (!hook.enabled) {
                     req.log.info('Hook is not enabled, not executing script')
-                    self.postLogBack(hook, callbackData, "Webhook is disabled.", true);
+                    self.postLogBack(hook, callbackData, "Webhook is disabled.", false);
 
                 } else if (!hook.script) {
                     req.log.info('Hook does not have an associated script, not executing');
-                    self.postLogBack(hook, callbackData, "No script for Webhook.", true);
+                    self.postLogBack(hook, callbackData, "No script for Webhook.", false);
                     
                 } else {
                     Promise.join(
