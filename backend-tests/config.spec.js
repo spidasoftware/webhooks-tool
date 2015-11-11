@@ -1,6 +1,7 @@
-config = require("../src/config")
+var config = require("../src/config");
 
 describe('config', function() {
+
     it('reads config file', function() {
         var testConfig = config(__dirname + '/../tests/data/');
 		expect(testConfig.externalServerUrl).toEqual("http://localhost:8080/");
@@ -27,4 +28,5 @@ describe('config', function() {
         expect(testConfig.externalServerUrl).toEqual('https://notmissingslash/');
         expect(testConfig.normalProperty).toEqual('not a url');
 	});
+    
 });

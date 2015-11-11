@@ -1,13 +1,7 @@
-var hookAPI = require("../src/hookAPI")
-
+var hookAPI = require("../src/hookAPI");
 
 describe('hookAPI', function() {
-    it('endWithSlash', function() {
-		expect(hookAPI.endWithSlash("asd")).toEqual("asd/");  //added slash
-		expect(hookAPI.endWithSlash("asd/")).toEqual("asd/");  //existing slash
-		expect(hookAPI.endWithSlash(" asd/ ")).toEqual("asd/");  //trim
-	});
-    
+
     it('getRemoteURL', function() {
     	hookAPI.config = {};
     	hookAPI.config.product = "pro";
@@ -21,4 +15,5 @@ describe('hookAPI', function() {
     	hookAPI.config.externalServerUrl = "http://localhost:8888/";
 		expect(hookAPI.getLocalURL()).toEqual("http://localhost:8888/callback");
 	});
+    
 });

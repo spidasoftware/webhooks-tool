@@ -1,19 +1,9 @@
 //Webhook API
 //Handles communication with min and scheduling or webhook renewal
 var Promise = require('bluebird');
-var request = Promise.promisify(require('request'));
+var requestWithLog = require('./utils').requestWithLog;
+var normalizeURL = require('./utils').normalizeURL;
 var log = require('./logger').hook;
-
-//Wraps request.js with a version that logs request and response
-var requestId = 0;
-var requestWithLog = function(options) {
-    var id = requestId++;
-    log.debug({id: id, requestOptions: options}, 'Outgoing Request');
-    return request(options).spread(function (response, body) {
-        log.debug({id: id, response: response}, 'Incoming Response');
-        return [response, body];
-    });
-};
 
 //Get the webhook from the array with that hookId
 var findByHookId = function(arr, hookId) {
@@ -195,20 +185,12 @@ var hookAPI = {
         });
     },
 
-    endWithSlash: function(url){
-    	url = url.trim();
-    	if(url.charAt(url.length - 1) !== '/'){
-    		url += '/';
-    	}
-    	return url;
-    },
-
     //Get configured urls
     getRemoteURL: function(action) {
-        return this.endWithSlash(this.config.minBaseUrl) + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
+        return normalizeURL(this.config.minBaseUrl) + this.config.product + '/webhookAPI/' + action + '?apiToken=' + this.config.apiToken;
     },
     getLocalURL: function() {
-        return this.endWithSlash(this.config.externalServerUrl) + 'callback';
+        return normalizeURL(this.config.externalServerUrl) + 'callback';
     },
 
     //pendingRenewals contains a map of hookId -> the promise that is resolved
