@@ -6,6 +6,8 @@ The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAM
 
 See the [SPIDAMin WebhookAPI Documentation](https://github.com/spidasoftware/schema/blob/master/doc/apis/webhookAPI.md) for more information on using webhooks with SPIDAMin.
 
+*Note* If Min becomes unavailable, the webhooks tool will need to be resynced with min to ensure that all webhooks are registered with min.  Please click the resync button on the admi page to do this.
+
 ## Installation
 
 ### Prerequisites
@@ -138,6 +140,10 @@ The Admin page allows for importing and exporting server data, restarting the We
 To export Webhook Tool data, click one of the Export buttons (Config, Users, Webhooks, or Everything).  Your browser will then download a file containing this data.  
 
 To import data into the Webhook Tool.  Click one of the Import buttons.  Click the upload button that appears then select a file to import.  NOTE: Importing data into the Webhooks Tool will erase all previous data of that type.  (i.e. if users are imported all existing users will be removed, but config and webhooks will not be modified)
+
+### Resync
+
+If min is down or needs to be restarted for any reason.  The webhooks tool will need to resync any missing webhooks with Min.  This can be done by clicking the Resync button on the Admin page.
 
 ## Development
 
