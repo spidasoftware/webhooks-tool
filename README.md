@@ -6,7 +6,7 @@ The SPIDAMin Webhooks Tool can be used to trigger scripts to run based on SPIDAM
 
 See the [SPIDAMin WebhookAPI Documentation](https://github.com/spidasoftware/schema/blob/master/doc/apis/webhookAPI.md) for more information on using webhooks with SPIDAMin.
 
-**Note:** If Min becomes unavailable, the webhooks tool will need to be resynced with min to ensure that all webhooks are registered with min.  Please click the resync button on the admi page to do this.
+**Note:** If Min becomes unavailable, the webhooks tool will need to be resynced with min to ensure that all webhooks are registered with min.  Please click the resync button on the admin page to do this.
 
 ## Installation
 
