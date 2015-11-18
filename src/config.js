@@ -14,8 +14,8 @@ var initialConfig = {
     dbVersion: 0,
     httpPort: 8080,
     product: 'projectmanager',
-    leaseTime: 7 * 24 * 60 * 60, //One week
-    leaseLeadTime: 24 * 60 * 60, //One day
+    leaseTime: 10 * 24 * 60 * 60, //10 days
+    leaseLeadTime: 3 * 24 * 60 * 60, //3 days
     logScriptOut: false,
     logCallbackData: false,
     passServerInfo: true,
