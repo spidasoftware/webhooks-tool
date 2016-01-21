@@ -5,6 +5,8 @@
  * 
  * NOTE: this script must be executable: chmod +x script-file-name-here 
  * NOTE: npm install spida-webhook-lib or add to package.json
+ * NOTE: if this is being run inside a docker container, then the "spida-webhook-lib" needs to be installed in
+ *   the host machine's mounted scripts folder using node.
  * 
  ******************************************************************************/
 var webhook = require("spida-webhook-lib");
