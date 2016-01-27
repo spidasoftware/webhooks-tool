@@ -10,7 +10,7 @@ frisby.globalSetup({
 });
 
 var now = Date.now()
-frisby.create('Create logEntry')
+frisby.create('NoRead -- Create logEntry')
     .post(testServer + '/api/logEntries', {
         logEntry: {
             timestamp: now,
@@ -35,7 +35,7 @@ frisby.create('Create logEntry')
             .expectStatus(200)
             .expectHeaderContains('content-type', 'application/json')
             .afterJSON(function(logResp) {
-                frisby.create('Create Webhook')
+                frisby.create('NoRead -- Create Webhook')
                     .post(testServer + '/api/webhooks', {
                         webhook: {
                             name: 'TEST WEBHOOK NOREAD',
@@ -56,7 +56,7 @@ frisby.create('Create logEntry')
                         enabled: true
                     })
                     .afterJSON(function(webhookResp) {
-                        frisby.create('Test callback')
+                        frisby.create('NoRead -- Test callback')
                             .post(testServer + '/callback?wait=true', {
                                 channel: 'Project',
                                 eventName: 'TEST EVENT',
@@ -66,7 +66,7 @@ frisby.create('Create logEntry')
                             }, {json:true})
                             .expectStatus(200)
                             .after(function() {
-                                frisby.create('Verify log entries added')
+                                frisby.create('NoRead -- Verify log entries added')
                                     .get(testServer + '/api/logs/' + logResp.log._id)
                                     .expectStatus(200)
                                     .expectHeaderContains('content-type', 'application/json')
@@ -74,18 +74,18 @@ frisby.create('Create logEntry')
                                 .toss();
 
 
-                                frisby.create('Delete webhook')
+                                frisby.create('NoRead -- Delete webhook')
                                     .delete(testServer + '/api/webhooks/' + webhookResp.webhook._id)
                                     .expectStatus(200)
                                     .expectHeaderContains('content-type', 'application/json')
                                     .expectJSON({})
                                     .afterJSON(function() {
-                                        frisby.create('Verify webhook deleted')
+                                        frisby.create('NoRead -- Verify webhook deleted')
                                             .get(testServer + '/api/webhooks/' + webhookResp.webhook._id)
                                             .expectStatus(404)
                                         .toss();
 
-                                        frisby.create('Verify webhook unregistered')
+                                        frisby.create('NoRead -- Verify webhook unregistered')
                                             .get(mockMin + '/~webhooks')
                                             .afterJSON(function(webhooks) {
                                             })
