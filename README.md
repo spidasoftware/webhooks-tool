@@ -91,6 +91,8 @@ The webhooks page shows all current webhooks.  Click 'New' to create a new webho
 
 Click 'New' to create a new webhook.
 
+### Creation Configuration
+
 * Name -- Enter a description name for the webhook.  This name will be passed to the given script.
 * Enabled -- Used to enable or disable the webhook.  Disabled webhooks will be kept active on SPIDAMin, but the given script will not be called when a callback occurs.
 * Hook Id -- The SPIDAMin Hook Id for this webhook.  (Set by SPIDAMin and uneditable).
@@ -101,9 +103,30 @@ Click 'New' to create a new webhook.
 * Script Parameter -- This parameter will be included in the JSON passed to the executed script as scriptParam.  This can be used to pass environment specific configuration details to the script.
 * Comments -- Any additional comments relating to this webhook.
 
+### Event Filter
+
 ![Testing an event filter](doc/testEventFilter.png)
 
-To test an event filter, click the test button next to it.  This will show a Test Event Name field.  By entering several event names in this field, you can test whether your event filter will match the give event name.
+To test an event filter, click the test button next to it.  This will show a Test Event Name field.  By entering several event names in this field, you can test whether your event filter will match the give event name. For example if you had a webhook listening to the `status` channel, you would receive the following event name for when the project "MyProject" entered the status of "Review":
+
+    statusEnter:project:Review:MyProject
+
+Keep in mind that the regular expression you create must match the entire event name, so if you wanted to trigger your script on this event the following would not trigger:
+
+    .*Review
+
+Because it only matches `statusEnter:project:Review` not the entire eventName `statusEnter:project:Review:MyProject`
+
+Some other examples of matching regular expressions would be:
+
+    .*:Review:.* //Triggers on all events named "Review"
+    .*Inspection //Triggers on all projects names ending in "Inspection"
+    statusEnter:.* //Triggers on every project entering a new status
+    
+
+A complete list of ``eventNames`` can be found [here](https://github.com/spidasoftware/schema/blob/master/doc/apis/webhookAPI.md#list-of-webhook-events) for all the different channels.
+
+An interactive regular expression evaluator can be found [here.](http://rubular.com/)
 
 ![Testing a script](doc/testScript.png)
 
