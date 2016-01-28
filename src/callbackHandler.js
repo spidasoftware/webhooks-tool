@@ -107,14 +107,18 @@ var callbackHandler = {
                 var child = spawn(options.cmd, options.args);
 
                 var errorHandler = function(err) {
-                    log.trace({err: err}, 'Error running child process');
-                    if (errorTranslations[err.message]) {
-                        err.display=errorTranslations[err.message];
-                    } else {
-                        err.display=err.message;
-                    }
+                    log.debug({err: err}, 'Error running child process');
+                    if (err.code !== 'EPIPE') {
+                        if (errorTranslations[err.message]) {
+                            err.display=errorTranslations[err.message];
+                        } else {
+                            err.display=err.message;
+                        }
 
-                    reject(err);
+                        reject(err);
+                    } else {
+                        log.debug('Ignoring EPIPE');
+                    }
                 };
 
                 child.on('error', errorHandler);
