@@ -32,7 +32,11 @@ export default Ember.Component.extend(ArrayPager,{
         // When java does the match the regex must match the entire string, 
         // but javascript will match on only a substring.  So, ^ and $ are 
         // added to force javascript regexps to work like Java. 
-        return new RegExp('^' + eventFilter + '$');
+        try {
+            return new RegExp('^' + eventFilter + '$');
+        } catch (e) {
+            return { test: function() { return false; } };
+        }
     }.property('webhook.eventFilter'),
 
     didInsertElement: function() {

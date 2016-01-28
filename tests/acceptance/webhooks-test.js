@@ -150,11 +150,16 @@ test('test event filter', function(assert) {
 
     andThen(function() {
         assert.equal(find('span:contains(Matches)',testEventNameRow).length, 1, 'Matches text is displayed');
+        fillIn('.row:contains(Event Filter) input','/((INVALID REGEXP');
+    });
+
+    andThen(function() {
+        assert.equal(find('span:contains(No Match)',testEventNameRow).length, 1, 'No Match text is displayed');
         fillIn('.row:contains(Event Filter) input','.*TEST_REGEXP.*');
     });
 
     andThen(function() {
-        assert.equal(find('span:contains(No Match)',testEventNameRow).length, 1, 'No Match test is displayed');
+        assert.equal(find('span:contains(No Match)',testEventNameRow).length, 1, 'No Match text is displayed');
         fillIn('.row:contains(Test Event Name) input','Blah Blah Blah--TEST_REGEXP--Random stuff here');
     });
 
