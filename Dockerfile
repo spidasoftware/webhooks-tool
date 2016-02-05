@@ -13,7 +13,7 @@ RUN apk --update add nodejs=0.12.9-r0 make=4.1-r0 g++=4.9.2-r5 git=2.4.1-r1 pyth
 	&& tar xfvz /build/webhooksTool*.tar.gz \
 	&& cp /build/start-docker.sh /srv/webhooks-tool \
 	&& rm -rf /build \
-	&& apk del make g++ git python \
+	&& apk del make g++ git \
 	&& npm uninstall -g grunt-cli bower \
 	&& mkdir /data /scripts
 WORKDIR /srv/webhooks-tool
