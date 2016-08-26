@@ -1,7 +1,7 @@
 FROM alpine:3.2
 
 ADD . /build
-RUN apk --update add nodejs=0.12.9-r0 make=4.1-r0 g++=4.9.2-r5 git=2.4.1-r1 python=2.7.10-r1 \
+RUN apk --update add nodejs make g++ git python \
 	&& rm -rf /var/cache/apk/* \
 	&& cd /build \
 	&& npm install -g grunt-cli@0.1.13 bower@1.6.2 \
