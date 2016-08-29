@@ -178,7 +178,8 @@ var hookAPI = {
             json: true,
             body: requestBody,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': 'Webhooks-Tool'
             }
         }).spread(function(response, body) {
             return body;
