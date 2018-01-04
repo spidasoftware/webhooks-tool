@@ -1,5 +1,7 @@
 FROM alpine:3.2
 
+ENV LANG en_US.UTF-8
+
 ADD . /build
 RUN apk --update add nodejs make g++ git python \
 	&& rm -rf /var/cache/apk/* \
