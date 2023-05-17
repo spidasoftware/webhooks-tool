@@ -148,6 +148,8 @@ Additionally, if the "Pass Server Info to Script" configuration option is select
 * apiToken -- The apiToken used by the application to connect to SPIDAMin
 * minServer -- The configured SPIDAMin base URL 
 
+In addition to making any webhook scripts executable, permissions of the directory and scripts should be verified to prevent a permission denied error.
+
 [Example Scripts](examples)
 
 [SPIDA Webhook Script NPM Module](https://github.com/spidasoftware/spida-webhook-lib)
